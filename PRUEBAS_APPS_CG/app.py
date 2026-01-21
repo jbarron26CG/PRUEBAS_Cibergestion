@@ -715,42 +715,6 @@ def registro_siniestro():
                     )
                     links_archivos.append(f"https://drive.google.com/file/d/{archivo_id}/view")
 
-            # Guardar en Sheets
-            """
-            sheet_form.append_row([
-                Siniestro,
-                Correlativo,
-                FechaSiniestro.strftime("%Y-%m-%d"),
-                Lugar,
-                Medio,
-                Cobertura,
-                Marca,
-                Submarca,
-                Version,
-                AñoModelo,
-                Serie,
-                Motor,
-                Patente,
-                datetime.now(ZoneInfo("America/Mexico_City")).strftime("%Y-%m-%d"),
-                datetime.now(ZoneInfo("America/Mexico_City")).strftime("%Y-%m-%d %H:%M:%S"),
-                "ALTA SINIESTRO",
-                Asegurado_Nombre,
-                Asegurado_Rut,
-                Asegurado_Tipo,
-                Asegurado_Telefono,
-                Asegurado_Correo,
-                Asegurado_Direccion,
-                Propietario_Nombre,
-                Propietario_Rut,
-                Propietario_Tipo,
-                Propietario_Telefono,
-                Propietario_Correo,
-                Propietario_Direccion,
-                Liquidador_Nombre,
-                Usuario_Login,
-                carpeta_link
-            ])
-            """
             supabase.table("BitacoraOperaciones").insert({
                 "NUM_SINIESTRO": Siniestro,
                 "CORRELATIVO": Correlativo,
