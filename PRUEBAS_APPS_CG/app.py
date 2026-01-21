@@ -795,6 +795,50 @@ def vista_buscar_siniestro():
         if resultado.empty:
             st.error("❌ Siniestro no encontrado.")
             return
+        resultado.rename(columns={
+            "NUM_SINIESTRO":"# DE SINIESTRO",
+            "CORRELATIVO":"CORRELATIVO",
+            "FECHA_SINIESTRO":"FECHA SINIESTRO",
+            "LUGAR_SINIESTRO":"LUGAR SINIESTRO",
+            "MEDIO":"MEDIO ASIGNACIÓN",
+            "COBERTURA":"COBERTURA",
+            "MARCA":"MARCA",
+            "SUBMARCA":"SUBMARCA",
+            "VERSION":"VERSIÓN",
+            "MODELO":"AÑO/MODELO",
+            "NO_SERIE":"NO. SERIE",
+            "MOTOR":"MOTOR",
+            "PATENTE":"PATENTE",
+            "FECHA_CREACION":"FECHA CREACIÓN",
+            "FECHA_ESTATUS_BITACORA":"FECHA ESTATUS BITÁCORA",
+            "ESTATUS":"ESTATUS",
+            "NOMBRE_ASEGURADO":"NOMBRE ASEGURADO",
+            "RUT_ASEGURADO":"RUT ASEGURADO",
+            "TIPO_DE_PERSONA_ASEGURADO":"TIPO DE PERSONA ASEGURADO",
+            "TEL_ASEGURADO":"TEL. ASEGURADO",
+            "CORREO_ASEGURADO":"CORREO ASEGURADO",
+            "DIRECCION_ASEGURADO":"DIRECCIÓN ASEGURADO",
+            "NOMBRE_PROPIETARIO":"NOMBRE PROPIETARIO",
+            "RUT_PROPIETARIO":"RUT PROPIETARIO",
+            "TIPO_DE_PERSONA_PROPIETARIO":"TIPO DE PERSONA PROPIETARIO",
+            "TEL_PROPIETARIO":"TEL. PROPIETARIO",
+            "CORREO_PROPIETARIO":"CORREO PROPIETARIO",
+            "DIRECCION_PROPIETARIO":"DIRECCIÓN PROPIETARIO",
+            "LIQUIDADOR":"LIQUIDADOR",
+            "CORREO_LIQUIDADOR":"CORREO LIQUIDADOR",
+            "DRIVE":"DRIVE",
+            "COMENTARIO":"COMENTARIO"
+        })
+
+        
+        resultado["FECHA ESTATUS BITÁCORA"] = pd.to_datetime(resultado["FECHA ESTATUS BITÁCORA"], errors="coerce")
+        resultado = resultado.sort_values(by=["FECHA ESTATUS BITÁCORA"],ascending=[True])
+        Ultimo_estatus = resultado.iloc[-1]["ESTATUS"]
+        st.metric(
+            label="Último estatus",
+            value=Ultimo_estatus
+        )
+        st.success(f"Último estatus: {Ultimo_estatus}")
 
         st.success("Resultado encontrado:")
         st.dataframe(resultado, use_container_width=True, hide_index=True)
