@@ -834,12 +834,7 @@ def vista_buscar_siniestro():
         resultado["FECHA ESTATUS BITÁCORA"] = pd.to_datetime(resultado["FECHA ESTATUS BITÁCORA"], errors="coerce")
         resultado = resultado.sort_values(by=["FECHA ESTATUS BITÁCORA"],ascending=[True])
         Ultimo_estatus = resultado.iloc[-1]["ESTATUS"]
-        st.metric(
-            label="Último estatus registrado",
-            value=Ultimo_estatus, height=10
-        )
         st.success(f"Último estatus registrado: {Ultimo_estatus}")
-
         st.info("Registro de operaciones completo:")
         st.dataframe(resultado, use_container_width=True, hide_index=True)
 
