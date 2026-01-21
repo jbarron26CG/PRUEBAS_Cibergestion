@@ -835,12 +835,12 @@ def vista_buscar_siniestro():
         resultado = resultado.sort_values(by=["FECHA ESTATUS BITÁCORA"],ascending=[True])
         Ultimo_estatus = resultado.iloc[-1]["ESTATUS"]
         st.metric(
-            label="Último estatus",
-            value=Ultimo_estatus
+            label="Último estatus registrado",
+            value=Ultimo_estatus, height=10
         )
-        st.success(f"Último estatus: {Ultimo_estatus}")
+        st.success(f"Último estatus registrado: {Ultimo_estatus}")
 
-        st.success("Resultado encontrado:")
+        st.info("Registro de operaciones completo:")
         st.dataframe(resultado, use_container_width=True, hide_index=True)
 
         # ============================
