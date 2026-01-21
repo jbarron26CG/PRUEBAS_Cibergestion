@@ -828,7 +828,7 @@ def vista_buscar_siniestro():
             "CORREO_LIQUIDADOR":"CORREO LIQUIDADOR",
             "DRIVE":"DRIVE",
             "COMENTARIO":"COMENTARIO"
-        })
+        },inplace=True)
 
         
         resultado["FECHA ESTATUS BITÁCORA"] = pd.to_datetime(resultado["FECHA ESTATUS BITÁCORA"], errors="coerce")
