@@ -736,9 +736,7 @@ def registro_siniestro():
                 "CORREO_ASEGURADO": Asegurado_Correo,
                 "LIQUIDADOR": Liquidador_Nombre,
                 "CORREO_LIQUIDADOR": Usuario_Login,
-                "DRIVE": carpeta_link,
-                "ESTATUS": "ALTA SINIESTRO",
-                "FECHA_CREACION": datetime.now().isoformat()
+                "DRIVE": carpeta_link
             }).execute()
 
             #st.success("✔ Siniestro registrado correctamente.")
