@@ -750,8 +750,8 @@ def registro_siniestro():
             }).execute()
 
             #st.success("✔ Siniestro registrado correctamente.")
-            st.toast("Guardando cambios...", icon="⏳",duration=5)
-            time.sleep(5)
+            st.toast("Guardando cambios...", icon="⏳",duration=3)
+            time.sleep(3)
             st.toast("Siniestro registrado correctamente", icon="✅")
             st.success("Siniestro registrado correctamente", icon="✅")
             #reset_form_registro()
@@ -772,12 +772,25 @@ def vista_buscar_siniestro():
         #df = obtener_dataframe(sheet_form)
         #df = cargar_dataframe_rate_limit(sheet_form, cooldown=15)
         try:
-            df = cargar_dataframe_rate_limit(sheet_form, cooldown=15)
-        except APIError:
-            st.warning("La API de Google Sheets está saturada. Intenta de nuevo en unos minutos.")
-            time.sleep(5)
+            #df = cargar_dataframe_rate_limit(sheet_form, cooldown=15)
+            response = (
+                supabase
+                .table("BitacoraOperaciones")
+                .select("*")
+                .eq("NUM_SINIESTRO", siniestro)
+                .execute()
+            )
+        except Exception as e:
+            st.error("Error al consultar el siniestro.")
+            st.write(e)
             st.stop()
-        resultado = df[df["# DE SINIESTRO"].astype(str) == str(siniestro)]
+
+        if not response.data:
+            st.error("❌ Siniestro no encontrado.")
+            return
+        
+        #resultado = df[df["# DE SINIESTRO"].astype(str) == str(siniestro)]
+        resultado = pd.DataFrame(response.data)
 
         if resultado.empty:
             st.error("❌ Siniestro no encontrado.")
