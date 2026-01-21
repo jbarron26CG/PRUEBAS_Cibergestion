@@ -13,6 +13,12 @@ import re
 from zoneinfo import ZoneInfo
 import yagmail
 import time
+from supabase import create_client
+
+supabase = create_client(
+    st.secrets["SUPABASE_URL"],
+    st.secrets["SUPABASE_KEY"]
+)
 
 def safe_google_call(func, *args, **kwargs):
     try:
@@ -710,6 +716,7 @@ def registro_siniestro():
                     links_archivos.append(f"https://drive.google.com/file/d/{archivo_id}/view")
 
             # Guardar en Sheets
+            """
             sheet_form.append_row([
                 Siniestro,
                 Correlativo,
@@ -743,6 +750,33 @@ def registro_siniestro():
                 Usuario_Login,
                 carpeta_link
             ])
+            """
+            supabase.table("BitacoraOperaciones").insert({
+                "NUM_SINIESTRO": Siniestro,
+                "CORRELATIVO": Correlativo,
+                "FECHA_SINIESTRO": FechaSiniestro.strftime("%Y-%m-%d"),
+                "LUGAR_SINIESTRO": Lugar,
+                "MEDIO": Medio,
+                "COBERTURA": Cobertura,
+                "MARCA": Marca,
+                "SUBMARCA": Submarca,
+                "VERSION": Version,
+                "MODELO": AñoModelo,
+                "NO_SERIE": Serie,
+                "MOTOR": Motor,
+                "PATENTE": Patente,
+                "FECHA_CREACION": datetime.now(ZoneInfo("America/Mexico_City")).strftime("%Y-%m-%d"),
+                "FECHA_ESTATUS_BITACORA": datetime.now(ZoneInfo("America/Mexico_City")).strftime("%Y-%m-%d %H:%M:%S"),
+                "ESTATUS": "ALTA SINIESTRO",
+                "NOMBRE_ASEGURADO": Asegurado_Nombre,
+                "CORREO_ASEGURADO": Asegurado_Correo,
+                "LIQUIDADOR": Liquidador_Nombre,
+                "CORREO_LIQUIDADOR": Usuario_Login,
+                "DRIVE": carpeta_link,
+                "ESTATUS": "ALTA SINIESTRO",
+                "FECHA_CREACION": datetime.now().isoformat()
+            }).execute()
+
             #st.success("✔ Siniestro registrado correctamente.")
             st.toast("Guardando cambios...", icon="⏳",duration=5)
             time.sleep(5)
