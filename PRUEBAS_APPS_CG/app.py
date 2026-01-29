@@ -236,7 +236,7 @@ df_usuarios = cargar_usuarios(sheet_users)
 # =======================================================
 #                       LOGIN
 # =======================================================
-def login(df):
+def login():
 
     st.title("Inicio de Sesión")
 
@@ -262,10 +262,9 @@ def login(df):
         
         registro = response.data[0]
 
-        if not bcrypt.checkpw(
-            password.encode("utf-8"),
-            registro["PASSWORD"].encode("utf-8")
-        ):
+        flag_psw = bcrypt.checkpw(password.encode("utf-8"), registro["PASSWORD"].encode("utf-8"))
+        time.sleep(1)
+        if not flag_psw:
             st.error("Usuario o contraseña incorrectos.")
             return
         st.session_state["USUARIO"] = registro["USUARIO"]
@@ -982,6 +981,19 @@ def vista_registro_usuario():
                 st.error("Revisa lo siguiente:\n- " + "\n- ".join(errores))
                 return
             
+            response = (
+                supabase
+                .table("Login")
+                .select("USUARIO","PASSWORD","ROL","LIQUIDADOR")
+                .eq("USUARIO",correo)
+                .limit(1)
+                .execute()
+            )
+
+            if response.data:
+                st.error("La dirección de correo ya está asociada a un perfil de liquidador. Intenta nuevamente con una cuenta distinta.")
+                return
+
             supabase.table("Login").insert({
                 "USUARIO": correo,
                 "PASSWORD": bcrypt.hashpw(str(password).encode("utf-8"),bcrypt.gensalt()).decode("utf-8"),
@@ -1139,7 +1151,7 @@ if "auth" not in st.session_state:
     st.session_state["auth"] = False
 
 if not st.session_state["auth"]:
-    login(df_usuarios)
+    login()
     st.stop()
 
 # =======================================================
