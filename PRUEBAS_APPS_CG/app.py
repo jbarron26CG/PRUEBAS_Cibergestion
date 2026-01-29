@@ -270,6 +270,7 @@ def login(df):
             return
         st.session_state["USUARIO"] = registro["USUARIO"]
         st.session_state["ROL"] = registro["ROL"]
+        st.session_state["LIQUIDADOR"] = registro["LIQUIDADOR"]
 
         st.success(f"Acceso exitoso. Bienvenido {registro['LIQUIDADOR']}")
         st.rerun()
