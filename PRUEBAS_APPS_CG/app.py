@@ -578,7 +578,7 @@ def vista_modificar_siniestro():
     st.session_state["siniestro_actual"] = seleccionado
 
     # Crear df_sel siempre actualizado
-    df_sel = response[response["NUM_SINIESTRO"] == seleccionado]
+    df_sel = response
 
     st.success(f"Siniestro seleccionado: {seleccionado}")
 
