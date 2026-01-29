@@ -543,18 +543,6 @@ def panel_modificar_datos(df_sel, df, siniestro_id):
 def vista_modificar_siniestro():
 
     st.subheader("🔍 Buscar siniestro para actualizar")
-
-    # ============================
-    #  1. Recargar DF 
-    # ============================
-    #df = obtener_dataframe(sheet_form)
-    #df = cargar_dataframe_rate_limit(sheet_form, cooldown=15)
-    try:
-        df = cargar_dataframe_rate_limit(sheet_form, cooldown=15)
-    except APIError:
-        st.warning("La API de Google Sheets está saturada. Intenta de nuevo en unos minutos.")
-        time.sleep(5)
-        st.stop()
     # ============================
     #  2. Buscar siniestro
     # ============================
@@ -565,23 +553,24 @@ def vista_modificar_siniestro():
         return
 
     # Coincidencias en cualquier columna
-    mask = df.apply(lambda r: r.astype(str).str.contains(busqueda, case=False, na=False).any(), axis=1)
-    resultados = df[mask]
+    try:
+        response = (
+            supabase
+            .table("BitacoraOperaciones")
+            .select("*")
+            .eq("NUM_SINIESTRO", busqueda)
+            .execute()
+        )
+    except Exception as e:
+        st.error("Error al consultar el siniestro.")
+        st.write(e)
+        st.stop()
 
-    if resultados.empty:
-        st.warning("❌ No se encontraron coincidencias.")
+    if not response.data:
+        st.error("Siniestro no encontrado.",icon="❌")
         return
-
-    siniestros_unicos = resultados["# DE SINIESTRO"].unique()
-
-    # ============================
-    #  3. Selección del siniestro
-    # ============================
-    seleccionado = st.selectbox(
-        "Selecciona un siniestro:",
-        siniestros_unicos,
-        key="sel_siniestro"
-    )
+    
+    seleccionado = response.data[0]
 
     if not seleccionado:
         return
@@ -589,20 +578,20 @@ def vista_modificar_siniestro():
     st.session_state["siniestro_actual"] = seleccionado
 
     # Crear df_sel siempre actualizado
-    df_sel = df[df["# DE SINIESTRO"] == seleccionado]
+    df_sel = response[response["NUM_SINIESTRO"] == seleccionado]
 
     st.success(f"Siniestro seleccionado: {seleccionado}")
 
     # ============================
     #  4. Tabs
     # ============================
-    tab1, tab2 = st.tabs(["✏️ Modificar Datos del Siniestro", "📌 Agregar Estatus (Seguimiento)"])
+    tab1, tab2 = st.tabs(["✏️ MODIFICAR DATOS", "📌 SEGUIMIENTO"])
 
     with tab1:
-        panel_modificar_datos(df_sel, df, seleccionado)
+        panel_modificar_datos(df_sel, response, seleccionado)
 
     with tab2:
-        panel_seguimiento(df_sel, df, seleccionado)
+        panel_seguimiento(df_sel, response, seleccionado)
 
     # ============================
     #  5. Regresar a inicio
