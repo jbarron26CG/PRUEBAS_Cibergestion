@@ -570,7 +570,7 @@ def vista_modificar_siniestro():
         st.error("Siniestro no encontrado.",icon="❌")
         return
     
-    seleccionado = response.data[0]
+    seleccionado = response.data[0].get("NUM_SINIESTRO")
 
     if not seleccionado:
         return
@@ -580,7 +580,7 @@ def vista_modificar_siniestro():
     # Crear df_sel siempre actualizado
     df_sel = response
 
-    st.success(f"Siniestro seleccionado: {seleccionado}")
+    st.success(f"Siniestro encontrado", icon="✅")
 
     # ============================
     #  4. Tabs
