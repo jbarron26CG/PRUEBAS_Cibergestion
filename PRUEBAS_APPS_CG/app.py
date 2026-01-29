@@ -804,7 +804,7 @@ def vista_buscar_siniestro():
             st.stop()
 
         if not response.data:
-            st.error("❌ Siniestro no encontrado.")
+            st.error("Siniestro no encontrado.",icon="❌")
             return
         
         #resultado = df[df["# DE SINIESTRO"].astype(str) == str(siniestro)]
@@ -873,21 +873,53 @@ def vista_buscar_siniestro():
         else:
             st.info("La columna 'DRIVE' no existe en el registro.")
 
-    if st.button("Volver al inicio", icon="⬅️"):
+    if st.button("Volver al inicio", icon="⬅️",use_container_width=True):
         st.session_state.vista = None
         st.rerun()
 
 def vista_descargas():
     st.subheader("📥 Descargas")
-
-    # --- Cargar datos del sheet ---
-    #df = pd.DataFrame(sheet_form.get_all_records())
-    try:
-        df = pd.DataFrame(sheet_form.get_all_records())
-    except APIError:
-        st.warning("La API de Google Sheets está saturada. Intenta de nuevo en unos minutos.")
-        time.sleep(5)
-        st.stop()
+    response = (
+                supabase
+                .table("BitacoraOperaciones")
+                .select("*")
+                .execute()
+            )
+    resultado = pd.DataFrame(response.data)
+    resultado.rename(columns={
+        "NUM_SINIESTRO":"# DE SINIESTRO",
+        "CORRELATIVO":"CORRELATIVO",
+        "FECHA_SINIESTRO":"FECHA SINIESTRO",
+        "LUGAR_SINIESTRO":"LUGAR SINIESTRO",
+        "MEDIO":"MEDIO ASIGNACIÓN",
+        "COBERTURA":"COBERTURA",
+        "MARCA":"MARCA",
+        "SUBMARCA":"SUBMARCA",
+        "VERSION":"VERSIÓN",
+        "MODELO":"AÑO/MODELO",
+        "NO_SERIE":"NO. SERIE",
+        "MOTOR":"MOTOR",
+        "PATENTE":"PATENTE",
+        "FECHA_CREACION":"FECHA CREACIÓN",
+        "FECHA_ESTATUS_BITACORA":"FECHA ESTATUS BITÁCORA",
+        "ESTATUS":"ESTATUS",
+        "NOMBRE_ASEGURADO":"NOMBRE ASEGURADO",
+        "RUT_ASEGURADO":"RUT ASEGURADO",
+        "TIPO_DE_PERSONA_ASEGURADO":"TIPO DE PERSONA ASEGURADO",
+        "TEL_ASEGURADO":"TEL. ASEGURADO",
+        "CORREO_ASEGURADO":"CORREO ASEGURADO",
+        "DIRECCION_ASEGURADO":"DIRECCIÓN ASEGURADO",
+        "NOMBRE_PROPIETARIO":"NOMBRE PROPIETARIO",
+        "RUT_PROPIETARIO":"RUT PROPIETARIO",
+        "TIPO_DE_PERSONA_PROPIETARIO":"TIPO DE PERSONA PROPIETARIO",
+        "TEL_PROPIETARIO":"TEL. PROPIETARIO",
+        "CORREO_PROPIETARIO":"CORREO PROPIETARIO",
+        "DIRECCION_PROPIETARIO":"DIRECCIÓN PROPIETARIO",
+        "LIQUIDADOR":"LIQUIDADOR",
+        "CORREO_LIQUIDADOR":"CORREO LIQUIDADOR",
+        "DRIVE":"DRIVE",
+        "COMENTARIO":"COMENTARIO"
+    },inplace=True)
 
     st.write("Selecciona el tipo de bitácora a descargar.")
 
@@ -900,11 +932,11 @@ def vista_descargas():
 
     # --- BITÁCORA DE OPERACIÓN ---
     if opcion == "Bitácora de operación":
-        #st.write("Descargar todos los registros de la hoja (bitácora completa).")
+        #st.write("Descargar todos los registros de la hoja (bitácora completa).")    
 
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
-            df.to_excel(writer, index=False, sheet_name="LOG")
+            resultado.to_excel(writer, index=False, sheet_name="LOG")
 
         st.download_button(
             label="Descargar bitácora",
@@ -920,13 +952,13 @@ def vista_descargas():
         #st.write("Descargar solo el registro más reciente de cada siniestro.")
 
         # Convertir fecha si existe
-        df["FECHA ESTATUS BITÁCORA"] = pd.to_datetime(
-            df["FECHA ESTATUS BITÁCORA"], 
+        resultado["FECHA ESTATUS BITÁCORA"] = pd.to_datetime(
+            resultado["FECHA ESTATUS BITÁCORA"], 
             errors="coerce"
         )
 
         # Ordenar para luego obtener el último registro por siniestro
-        df_sorted = df.sort_values(
+        df_sorted = resultado.sort_values(
             by=["# DE SINIESTRO", "FECHA ESTATUS BITÁCORA"],
             ascending=[True, True]
         )
@@ -991,7 +1023,7 @@ def vista_registro_usuario():
             )
 
             if response.data:
-                st.error("La dirección de correo ya está asociada a un perfil de liquidador. Intenta nuevamente con una cuenta distinta.")
+                st.error("La dirección de correo ingresada ya se encuentra asociada a un perfil de liquidador. Intenta nuevamente con una cuenta distinta.", icon="🚨")
                 return
 
             supabase.table("Login").insert({
