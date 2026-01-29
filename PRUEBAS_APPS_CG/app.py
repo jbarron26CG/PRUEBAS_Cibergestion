@@ -981,12 +981,14 @@ def vista_registro_usuario():
             if errores:
                 st.error("Revisa lo siguiente:\n- " + "\n- ".join(errores))
                 return
-            sheet_users.append_row([
-                correo,
-                password,
-                rol,
-                usuario
-            ])
+            
+            supabase.table("Login").insert({
+                "USUARIO": correo,
+                "PASSWORD": bcrypt.hashpw(str(password).encode("utf-8"),bcrypt.gensalt()).decode("utf-8"),
+                "ROL": rol,
+                "LIQUIDADOR": usuario.upper()
+            })
+
             st.success("Usuario registrado correctamente")
             CLAVE_APP = 'ckkazcijqkwikscd' #Contraseña de aplicación, utilizada para acceder al correo
             REMITENTE = 'jbarron@cibergestion.com' 
