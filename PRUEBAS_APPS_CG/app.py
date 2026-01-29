@@ -932,14 +932,6 @@ def vista_descargas():
         ],
         key="tipo_descarga"
     )
-    st.download_button(
-    label="Descargar bitácora",
-    icon="⬇️",
-    use_container_width=True,
-    disabled=True,
-    data=buffer.getvalue(),
-    file_name="Bitacora_Operación_SURA.xlsx",
-    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     # --- BITÁCORA DE OPERACIÓN ---
     if opcion == "Bitácora de operación":
 
@@ -947,23 +939,15 @@ def vista_descargas():
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             resultado.to_excel(writer, index=False, sheet_name="LOG")
 
-        if st.download_button(
-            label="Descargar bitácora",
+        st.download_button(
+            label="Descargar bitácora de operación",
             icon="⬇️",
             use_container_width=True,
             disabled=False,
             data=buffer.getvalue(),
             file_name="Bitacora_Operación_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        ):
-            st.download_button(
-            label="Descargar bitácora",
-            icon="⬇️",
-            use_container_width=True,
-            disabled=True,
-            data=buffer.getvalue(),
-            file_name="Bitacora_Operación_SURA.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        )
 
     # --- BITÁCORA DE ÚLTIMO ESTATUS ---
     elif opcion == "Bitácora de último estatus":
@@ -983,23 +967,15 @@ def vista_descargas():
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             df_ultimos.to_excel(writer, index=False, sheet_name="LOG")
 
-        if st.download_button(
-            label="Descargar bitácora",
+        st.download_button(
+            label="Descargar bitácora de último estatus",
             icon="⬇️",
             use_container_width=True,
             disabled=False,
             data=buffer.getvalue(),
             file_name="Bitacora_UltimoEstatus_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        ):
-            st.download_button(
-            label="Descargar bitácora",
-            icon="⬇️",
-            use_container_width=True,
-            disabled=True,
-            data=buffer.getvalue(),
-            file_name="Bitacora_Operación_SURA.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        )
 
     if st.button("Volver al inicio",icon="⬅️",use_container_width=True,width=100):
         st.session_state.vista = None
