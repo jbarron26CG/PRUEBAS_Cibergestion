@@ -921,14 +921,22 @@ def vista_descargas():
         "COMENTARIO":"COMENTARIO"
     },inplace=True)
 
+    if "tipo_descarga" not in st.session_state:
+        st.session_state["tipo_descarga"] = "Selecciona una opción"
+
+
     st.write("Selecciona el tipo de bitácora a descargar.")
 
     opcion = st.selectbox(
         "Tipo de descarga",
-        ["Selecciona una opción",
-         "Bitácora de operación", 
-         "Bitácora de último estatus"]
+        [
+            "Selecciona una opción",
+            "Bitácora de operación",
+            "Bitácora de último estatus"
+        ],
+        key="tipo_descarga"
     )
+
 
     # --- BITÁCORA DE OPERACIÓN ---
     if opcion == "Bitácora de operación":
@@ -946,7 +954,8 @@ def vista_descargas():
             file_name="Bitacora_Operación_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ):
-            return
+            st.session_state["tipo_descarga"] = "Selecciona una opción"
+            st.rerun()
 
     # --- BITÁCORA DE ÚLTIMO ESTATUS ---
     elif opcion == "Bitácora de último estatus":
@@ -979,7 +988,8 @@ def vista_descargas():
             file_name="Bitacora_UltimoEstatus_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ):
-            return
+            st.session_state["tipo_descarga"] = "Selecciona una opción"
+            st.rerun()
     if st.button("Volver al inicio",icon="⬅️",use_container_width=True,width=100):
         st.session_state.vista = None
         st.rerun()
