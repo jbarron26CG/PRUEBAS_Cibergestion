@@ -264,7 +264,7 @@ def login(df):
 
         if not bcrypt.checkpw(
             password.encode("utf-8"),
-            registro["password_hash"].encode("utf-8")
+            registro["PASSWORD"].encode("utf-8")
         ):
             st.error("Usuario o contraseña incorrectos.")
             return
