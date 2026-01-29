@@ -987,7 +987,7 @@ def vista_registro_usuario():
                 "PASSWORD": bcrypt.hashpw(str(password).encode("utf-8"),bcrypt.gensalt()).decode("utf-8"),
                 "ROL": rol,
                 "LIQUIDADOR": usuario.upper()
-            })
+            }).execute()
 
             st.success("Usuario registrado correctamente")
             CLAVE_APP = 'ckkazcijqkwikscd' #Contraseña de aplicación, utilizada para acceder al correo
