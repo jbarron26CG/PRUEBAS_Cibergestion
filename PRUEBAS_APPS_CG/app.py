@@ -946,7 +946,7 @@ def vista_descargas():
             file_name="Bitacora_Operación_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ):
-            st.rerun()
+            return
 
     # --- BITÁCORA DE ÚLTIMO ESTATUS ---
     elif opcion == "Bitácora de último estatus":
@@ -979,7 +979,7 @@ def vista_descargas():
             file_name="Bitacora_UltimoEstatus_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ):
-            st.rerun()
+            return
     if st.button("Volver al inicio",icon="⬅️",use_container_width=True,width=100):
         st.session_state.vista = None
         st.rerun()
