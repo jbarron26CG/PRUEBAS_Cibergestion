@@ -269,10 +269,10 @@ def login(df):
             st.error("Usuario o contraseña incorrectos.")
             return
         st.session_state["USUARIO"] = registro["USUARIO"]
-        st.session_state["ROL"] = registro.get("ROL")
+        st.session_state["ROL"] = registro["ROL"]
 
-        st.success(f"Bienvenido {registro['USUARIO']}")
-        #st.rerun()
+        st.success(f"Acceso exitoso. Bienvenido {registro['LIQUIDADOR']}")
+        st.rerun()
 
 def guardar_dataframe(sheet, df):
     sheet.clear()
