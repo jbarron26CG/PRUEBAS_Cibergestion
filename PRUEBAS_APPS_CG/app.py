@@ -938,14 +938,15 @@ def vista_descargas():
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             resultado.to_excel(writer, index=False, sheet_name="LOG")
 
-        st.download_button(
+        if st.download_button(
             label="Descargar bitácora",
             icon="⬇️",
             use_container_width=True,
             data=buffer.getvalue(),
             file_name="Bitacora_Operación_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+        ):
+            st.rerun()
 
     # --- BITÁCORA DE ÚLTIMO ESTATUS ---
     elif opcion == "Bitácora de último estatus":
@@ -970,14 +971,15 @@ def vista_descargas():
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             df_ultimos.to_excel(writer, index=False, sheet_name="LOG")
 
-        st.download_button(
+        if st.download_button(
             label="Descargar bitácora",
             icon="⬇️",
             use_container_width=True,
             data=buffer.getvalue(),
             file_name="Bitacora_UltimoEstatus_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+        ):
+            st.rerun()
     if st.button("Volver al inicio",icon="⬅️",use_container_width=True,width=100):
         st.session_state.vista = None
         st.rerun()
