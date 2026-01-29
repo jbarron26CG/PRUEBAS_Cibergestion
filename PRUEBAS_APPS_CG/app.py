@@ -378,9 +378,15 @@ def panel_subir_documentos():
         st.toast("Archivos cargados correctamente", icon="✅")
         st.success("Archivos cargados correctamente", icon="✅")
     
-def panel_seguimiento(df_sel, df, siniestro_id):
+def panel_seguimiento(siniestro_id):
 
     st.subheader("📌 Agregar Estatus (Seguimiento)")
+    response = (
+        supabase
+        .table("BitacoraOperaciones")
+        .select("*")
+        .execute()
+    )
 
     with st.form("form_seguimiento", clear_on_submit=True):
 
@@ -416,8 +422,7 @@ def panel_seguimiento(df_sel, df, siniestro_id):
         if nuevo_estatus == "Seleccionar estatus":
             st.warning("Debes seleccionar un estatus.")
             return
-
-        ref = df_sel.iloc[-1].copy()
+        ref = response.data[-1]
         ahora = datetime.now(ZoneInfo("America/Mexico_City"))
 
         ref["FECHA ESTATUS BITÁCORA"] = ahora.strftime("%Y-%m-%d %H:%M:%S")
@@ -425,7 +430,8 @@ def panel_seguimiento(df_sel, df, siniestro_id):
         ref["COMENTARIO"] = comentario
         ref["CORREO LIQUIDADOR"] = st.session_state["USUARIO"]
 
-        agregar_fila(sheet_form, ref.to_dict())
+        #agregar_fila(sheet_form, ref.to_dict())
+        supabase.table("BitacoraOperaciones").insert(ref).execute()
 
         if uploaded_files:
             nombre_carpeta = f"SINIESTRO_{siniestro_id}"
@@ -441,11 +447,10 @@ def panel_seguimiento(df_sel, df, siniestro_id):
                 )
 
         st.session_state["last_load_time"] = 0
-        st.toast("Guardando cambios...", icon="⏳",duration=5)
-        time.sleep(5)
+        st.toast("Guardando cambios...", icon="⏳",duration=2)
         st.toast("Estatus agregado correctamente", icon="✅")
         st.success("Estatus agregado correctamente", icon="✅")
-        time.sleep(3)
+        time.sleep(2)
         st.rerun()
 
 
@@ -591,7 +596,7 @@ def vista_modificar_siniestro():
         panel_modificar_datos(df_sel, response, seleccionado)
 
     with tab2:
-        panel_seguimiento(df_sel, response, seleccionado)
+        panel_seguimiento(seleccionado)
 
     # ============================
     #  5. Regresar a inicio
