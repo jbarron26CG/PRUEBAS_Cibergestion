@@ -923,9 +923,6 @@ def vista_descargas():
 
     st.write("Selecciona el tipo de bitácora a descargar.")
 
-    if "descargado" not in st.session_state:
-        st.session_state["descargado"] = False
-
     opcion = st.selectbox(
         "Tipo de descarga",
         [
@@ -951,9 +948,7 @@ def vista_descargas():
             file_name="Bitacora_Operación_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ):
-            st.session_state["descargado"] = True
-            st.session_state["tipo_descarga"] = "Selecciona una opción"
-            st.rerun()
+            vista_descargas()
 
     # --- BITÁCORA DE ÚLTIMO ESTATUS ---
     elif opcion == "Bitácora de último estatus":
@@ -982,16 +977,7 @@ def vista_descargas():
             file_name="Bitacora_UltimoEstatus_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ):
-            st.session_state["descargado"] = True
-            st.session_state["tipo_descarga"] = "Selecciona una opción"
-            st.rerun()
- 
-    if opcion != st.session_state.get("opcion_anterior"):
-        st.session_state["descargado"] = False
-        st.session_state["opcion_anterior"] = opcion
-
-    if st.session_state["descargado"]:
-        st.info("La bitácora ya fue descargada.")
+            vista_descargas()
 
     if st.button("Volver al inicio",icon="⬅️",use_container_width=True,width=100):
         st.session_state.vista = None
