@@ -243,37 +243,39 @@ def login():
     user = st.text_input("USUARIO:")
     password = st.text_input("CONTRASEÑA:", type="password")
 
-    if st.button("Ingresar",use_container_width=True):
-        if not user or not password:
-            st.warning("Ingresa usurio y contraseña")
-            return
-        response = (
-            supabase
-            .table("Login")
-            .select("USUARIO","PASSWORD","ROL","LIQUIDADOR")
-            .eq("USUARIO",user)
-            .limit(1)
-            .execute()
-        )
+    if user or password:
+        ingreso = st.button("Ingresar",use_container_width=True)
+        if ingreso:
+            if not user or not password:
+                st.warning("Ingresa usurio y contraseña")
+                return
+            response = (
+                supabase
+                .table("Login")
+                .select("USUARIO","PASSWORD","ROL","LIQUIDADOR")
+                .eq("USUARIO",user)
+                .limit(1)
+                .execute()
+            )
 
-        if not response.data:
-            st.error("Usuario o contraseña incorrectos")
-            return
-        
-        registro = response.data[0]
+            if not response.data:
+                st.error("Usuario o contraseña incorrectos")
+                return
+            
+            registro = response.data[0]
 
-        flag_psw = bcrypt.checkpw(password.encode("utf-8"), registro["PASSWORD"].encode("utf-8"))
-        time.sleep(1)
-        if not flag_psw:
-            st.error("Usuario o contraseña incorrectos.")
-            return
-        st.session_state["USUARIO"] = registro["USUARIO"]
-        st.session_state["ROL"] = registro["ROL"]
-        st.session_state["LIQUIDADOR"] = registro["LIQUIDADOR"]
-        st.session_state["auth"] = True
+            flag_psw = bcrypt.checkpw(password.encode("utf-8"), registro["PASSWORD"].encode("utf-8"))
+            time.sleep(1)
+            if not flag_psw:
+                st.error("Usuario o contraseña incorrectos.")
+                return
+            st.session_state["USUARIO"] = registro["USUARIO"]
+            st.session_state["ROL"] = registro["ROL"]
+            st.session_state["LIQUIDADOR"] = registro["LIQUIDADOR"]
+            st.session_state["auth"] = True
 
-        st.success(f"Acceso exitoso. Bienvenido {registro['LIQUIDADOR']}")
-        st.rerun()
+            st.success(f"Acceso exitoso. Bienvenido {registro['LIQUIDADOR']}")
+            st.rerun()
 
 def guardar_dataframe(sheet, df):
     sheet.clear()
