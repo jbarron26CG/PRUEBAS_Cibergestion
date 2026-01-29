@@ -921,10 +921,6 @@ def vista_descargas():
         "COMENTARIO":"COMENTARIO"
     },inplace=True)
 
-    if "tipo_descarga" not in st.session_state:
-        st.session_state["tipo_descarga"] = "Selecciona una opción"
-
-
     st.write("Selecciona el tipo de bitácora a descargar.")
 
     opcion = st.selectbox(
@@ -937,6 +933,8 @@ def vista_descargas():
         key="tipo_descarga"
     )
 
+    if "tipo_descarga" not in st.session_state:
+        st.session_state["tipo_descarga"] = "Selecciona una opción"
 
     # --- BITÁCORA DE OPERACIÓN ---
     if opcion == "Bitácora de operación":
