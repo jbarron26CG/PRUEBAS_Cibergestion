@@ -923,6 +923,9 @@ def vista_descargas():
 
     st.write("Selecciona el tipo de bitácora a descargar.")
 
+    if "descargado" not in st.session_state:
+        st.session_state["descargado"] = False
+
     opcion = st.selectbox(
         "Tipo de descarga",
         [
@@ -934,55 +937,61 @@ def vista_descargas():
     )
     # --- BITÁCORA DE OPERACIÓN ---
     if opcion == "Bitácora de operación":
-        #st.write("Descargar todos los registros de la hoja (bitácora completa).")    
 
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             resultado.to_excel(writer, index=False, sheet_name="LOG")
 
-        st.toast("Preparando descarga...", icon="⏳",duration=2)
-        
-        st.download_button(
+        if st.download_button(
             label="Descargar bitácora de operación",
             icon="⬇️",
             use_container_width=True,
+            disabled=st.session_state["descargado"],
             data=buffer.getvalue(),
             file_name="Bitacora_Operación_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+        ):
+            st.session_state["descargado"] = True
+            st.session_state["tipo_descarga"] = "Selecciona una opción"
+            st.rerun()
+
     # --- BITÁCORA DE ÚLTIMO ESTATUS ---
     elif opcion == "Bitácora de último estatus":
-        #st.write("Descargar solo el registro más reciente de cada siniestro.")
-
-        # Convertir fecha si existe
         resultado["FECHA ESTATUS BITÁCORA"] = pd.to_datetime(
-            resultado["FECHA ESTATUS BITÁCORA"], 
+            resultado["FECHA ESTATUS BITÁCORA"],
             errors="coerce"
         )
 
-        # Ordenar para luego obtener el último registro por siniestro
         df_sorted = resultado.sort_values(
             by=["# DE SINIESTRO", "FECHA ESTATUS BITÁCORA"],
             ascending=[True, True]
         )
 
-        # Obtener el último registro por siniestro
         df_ultimos = df_sorted.groupby("# DE SINIESTRO").tail(1)
 
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             df_ultimos.to_excel(writer, index=False, sheet_name="LOG")
-            
-        st.toast("Preparando descarga...", icon="⏳",duration=2)
-        st.download_button(
+
+        if st.download_button(
             label="Descargar bitácora de último estatus",
             icon="⬇️",
             use_container_width=True,
+            disabled=st.session_state["descargado"],
             data=buffer.getvalue(),
             file_name="Bitacora_UltimoEstatus_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-        
+        ):
+            st.session_state["descargado"] = True
+            st.session_state["tipo_descarga"] = "Selecciona una opción"
+            st.rerun()
+ 
+    if opcion != st.session_state.get("opcion_anterior"):
+        st.session_state["descargado"] = False
+        st.session_state["opcion_anterior"] = opcion
+
+    if st.session_state["descargado"]:
+        st.info("La bitácora ya fue descargada.")
 
     if st.button("Volver al inicio",icon="⬅️",use_container_width=True,width=100):
         st.session_state.vista = None
