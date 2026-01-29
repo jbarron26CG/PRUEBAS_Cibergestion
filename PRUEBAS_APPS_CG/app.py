@@ -276,7 +276,8 @@ def login():
 
             st.success(f"Acceso exitoso. Bienvenido {registro['LIQUIDADOR']}")
             st.rerun()
-
+    else:
+        ingreso = st.button("Ingresar",use_container_width=True,disabled=True)
 def guardar_dataframe(sheet, df):
     sheet.clear()
     sheet.update([df.columns.tolist()] + df.values.tolist())
