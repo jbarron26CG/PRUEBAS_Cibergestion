@@ -940,15 +940,16 @@ def vista_descargas():
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             resultado.to_excel(writer, index=False, sheet_name="LOG")
 
+        st.toast("Preparando descarga...", icon="⏳",duration=2)
+        
         st.download_button(
-            label="Descargar bitácora",
+            label="Descargar bitácora de operación",
             icon="⬇️",
             use_container_width=True,
             data=buffer.getvalue(),
             file_name="Bitacora_Operación_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-        st.session_state.vista = "DESCARGA"
     # --- BITÁCORA DE ÚLTIMO ESTATUS ---
     elif opcion == "Bitácora de último estatus":
         #st.write("Descargar solo el registro más reciente de cada siniestro.")
@@ -971,16 +972,17 @@ def vista_descargas():
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             df_ultimos.to_excel(writer, index=False, sheet_name="LOG")
-
+            
+        st.toast("Preparando descarga...", icon="⏳",duration=2)
         st.download_button(
-            label="Descargar bitácora",
+            label="Descargar bitácora de último estatus",
             icon="⬇️",
             use_container_width=True,
             data=buffer.getvalue(),
             file_name="Bitacora_UltimoEstatus_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-        st.session_state.vista = "DESCARGA"
+        
 
     if st.button("Volver al inicio",icon="⬅️",use_container_width=True,width=100):
         st.session_state.vista = None
