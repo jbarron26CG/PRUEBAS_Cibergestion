@@ -932,10 +932,6 @@ def vista_descargas():
         ],
         key="tipo_descarga"
     )
-
-    if "tipo_descarga" not in st.session_state:
-        st.session_state["tipo_descarga"] = "Selecciona una opción"
-
     # --- BITÁCORA DE OPERACIÓN ---
     if opcion == "Bitácora de operación":
         #st.write("Descargar todos los registros de la hoja (bitácora completa).")    
@@ -944,17 +940,15 @@ def vista_descargas():
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             resultado.to_excel(writer, index=False, sheet_name="LOG")
 
-        if st.download_button(
+        st.download_button(
             label="Descargar bitácora",
             icon="⬇️",
             use_container_width=True,
             data=buffer.getvalue(),
             file_name="Bitacora_Operación_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        ):
-            st.session_state["tipo_descarga"] = "Selecciona una opción"
-            st.rerun()
-
+        )
+        st.session_state.vista = "DESCARGA"
     # --- BITÁCORA DE ÚLTIMO ESTATUS ---
     elif opcion == "Bitácora de último estatus":
         #st.write("Descargar solo el registro más reciente de cada siniestro.")
@@ -978,16 +972,16 @@ def vista_descargas():
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             df_ultimos.to_excel(writer, index=False, sheet_name="LOG")
 
-        if st.download_button(
+        st.download_button(
             label="Descargar bitácora",
             icon="⬇️",
             use_container_width=True,
             data=buffer.getvalue(),
             file_name="Bitacora_UltimoEstatus_SURA.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        ):
-            st.session_state["tipo_descarga"] = "Selecciona una opción"
-            st.rerun()
+        )
+        st.session_state.vista = "DESCARGA"
+
     if st.button("Volver al inicio",icon="⬅️",use_container_width=True,width=100):
         st.session_state.vista = None
         st.rerun()
