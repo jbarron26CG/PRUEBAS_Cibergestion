@@ -7,6 +7,7 @@ from googleapiclient.errors import HttpError
 from gspread.exceptions import APIError
 import io
 import gspread
+import bcrypt
 #import datetime
 from datetime import datetime
 import re
@@ -243,19 +244,35 @@ def login(df):
     password = st.text_input("CONTRASEÑA:", type="password")
 
     if st.button("Ingresar",use_container_width=True):
-        registros = sheet_users.get_all_records()
-        #registros = df_usuarios
-        for fila in registros:
-            if fila["USUARIO"] == user and fila["PASSWORD"] == password:
-                st.session_state["auth"] = True
-                st.session_state["USUARIO"] = fila["USUARIO"]
-                st.session_state["LIQUIDADOR"] = fila["LIQUIDADOR"]
-                st.session_state["ROL"] = fila["ROL"]
-                st.success("Acceso exitoso.")
-                st.rerun()
+        if not user or not password:
+            st.warning("Ingresa usurio y contraseña")
+            return
+        response = (
+            supabase
+            .table("Login")
+            .select("USUARIO","PASSWORD","ROL","LIQUIDADOR")
+            .eq("USUARIO",user)
+            .limit(1)
+            .execute()
+        )
 
-        st.error("Credenciales incorrectas")
+        if not response.data:
+            st.error("Usuario o contraseña incorrectos")
+            return
+        
+        registro = response.data[0]
 
+        if not bcrypt.checkpw(
+            password.encode("utf-8"),
+            registro["password_hash"].encode("utf-8")
+        ):
+            st.error("Usuario o contraseña incorrectos.")
+            return
+        st.session_state["USUARIO"] = registro["USUARIO"]
+        st.session_state["ROL"] = registro.get("ROL")
+
+        st.success(f"Bienvenido {registro['USUARIO']}")
+        st.rerun()
 
 def guardar_dataframe(sheet, df):
     sheet.clear()
