@@ -272,7 +272,7 @@ def login(df):
         st.session_state["ROL"] = registro.get("ROL")
 
         st.success(f"Bienvenido {registro['USUARIO']}")
-        st.rerun()
+        #st.rerun()
 
 def guardar_dataframe(sheet, df):
     sheet.clear()
