@@ -942,11 +942,6 @@ def dash_general():
     with col1:
         st.metric("🧾 Total siniestros", total_siniestros, chart_type="area")
 
-    
-    
-
-
-
 def vista_liquidador():
 
     Liquidador_Nombre = st.session_state["LIQUIDADOR"]
@@ -996,6 +991,7 @@ def vista_liquidador():
 def vista_admin():
     Liquidador_Nombre = st.session_state["LIQUIDADOR"]
     st.title(f"¡HOLA, {Liquidador_Nombre}!")
+    st.header(f"¡HOLA, {Liquidador_Nombre}!")
 
     # Inicializar la variable si no existe
     if "vista" not in st.session_state:
