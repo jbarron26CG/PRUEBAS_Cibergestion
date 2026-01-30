@@ -971,7 +971,7 @@ def dash_general():
     with col2:
         kpi_card("SINIESTROS CERRADOS",total_cerrados,"#F0FFEA","#047A1B")
     with col3:
-        kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#8DCADB")
+        kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#6DA1AF")
     with col4:
         st.metric("🔴 Alertas", 3)
 
