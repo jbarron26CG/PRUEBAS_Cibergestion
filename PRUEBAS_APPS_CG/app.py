@@ -21,60 +21,6 @@ supabase = create_client(
     st.secrets["SUPABASE_KEY"]
 )
 
-def safe_google_call(func, *args, **kwargs):
-    try:
-        return func(*args, **kwargs)
-
-    except (gspread.exceptions.APIError, HttpError) as e:
-
-        # Detectar error por saturación / limite de uso
-        if "quota" in str(e).lower() or "rate limit" in str(e).lower():
-            st.warning("⚠️ Saturación temporal del servicio. Por favor intenta nuevamente en unos segundos.")
-        else:
-            st.error("⚠️ Ocurrió un error inesperado al comunicarse con Google Sheets.")
-
-        # Puedes registrar el error si quieres:
-        # st.write(str(e))
-
-        return None
-
-def cargar_dataframe_rate_limit(sheet_form, cooldown=15):
-    """
-    Carga el DataFrame solo si han pasado X segundos desde la última actualización.
-    cooldown: segundos mínimos entre llamadas reales a Google Sheets.
-    """
-    now = time.time()
-
-    # Si NO existe historial → cargar por primera vez
-    if "last_load_time" not in st.session_state:
-        st.session_state["last_load_time"] = 0
-
-    # Verificar rate limit
-    if now - st.session_state["last_load_time"] < cooldown:
-        # Usar caché existente
-        return st.session_state.get("df_form", pd.DataFrame())
-
-    # Si ya pasó el cooldown → cargar de Sheets
-    #data = sheet_form.get_all_values()
-    try:
-        data = sheet_form.get_all_values()
-    except APIError:
-        st.warning("La API de Google Sheets está saturada. Intenta de nuevo en unos minutos.")
-        time.sleep(5)
-        st.stop()
-    if not data:
-        df = pd.DataFrame()
-    else:
-        df = pd.DataFrame(data[1:], columns=data[0])
-
-    # Guardar en caché
-    st.session_state["df_form"] = df
-    st.session_state["last_load_time"] = now
-
-    return df
-
-
-
 # =======================================================
 #             CONFIGURAR CREDENCIALES
 # =======================================================
@@ -188,52 +134,6 @@ def subir_archivo_drive(nombre_archivo, contenido, mime_type, folder_id, drive_s
     return archivo["id"]
 
 # =======================================================
-#                 CARGAR DATOS
-# =======================================================
-def obtener_dataframe(sheet_form):
-    #data = sheet_form.get_all_records()
-    #df = pd.DataFrame(data)
-    try:
-        data = sheet_form.get_all_records()
-        df = pd.DataFrame(data)
-    except APIError:
-        st.warning("La API de Google Sheets está saturada. Intenta de nuevo en unos minutos.")
-        time.sleep(5)
-        st.stop()
-    return df
-
-# =======================================================
-#               ABRIR SPREADSHEETS
-# =======================================================
-
-SHEET_FORM_URL = "https://docs.google.com/spreadsheets/d/14bY32k5rVucqYr5g93U8KdOS7-w4Of_qrvN5c1Xt9a4/edit?gid=0#gid=0"
-#sheet_form = client.open_by_url(SHEET_FORM_URL).sheet1
-try:
-    sheet_form = client.open_by_url(SHEET_FORM_URL).sheet1
-except APIError:
-    st.warning("La API de Google Sheets está saturada. Intenta de nuevo en unos minutos.")
-    time.sleep(5)
-    st.stop()
-
-SHEET_LOGIN_URL = "https://docs.google.com/spreadsheets/d/14ByPe5nivtsO1k-lTeJLOY1SPAtqsA9sEQnjArIk4Ik/edit?gid=0#gid=0"
-sheet_users = client.open_by_url(SHEET_LOGIN_URL).worksheet("Login")
-
-if "df_form" not in st.session_state:
-    st.session_state["df_form"] = obtener_dataframe(sheet_form)
-
-if "form_dirty" not in st.session_state:
-    st.session_state["form_dirty"] = False
-
-# =======================================================
-#                 CARGAR USUARIOS
-# =======================================================
-def cargar_usuarios(sheet):
-    datos = sheet.get_all_records()
-    return pd.DataFrame(datos)
-
-df_usuarios = cargar_usuarios(sheet_users)
-
-# =======================================================
 #                       LOGIN
 # =======================================================
 def login():
@@ -279,21 +179,6 @@ def login():
     else:
         ingreso = st.button("Ingresar",use_container_width=True,disabled=True)
 
-def guardar_dataframe(sheet, df):
-    sheet.clear()
-    sheet.update([df.columns.tolist()] + df.values.tolist())
-
-def agregar_fila(sheet, fila_dict):
-    # Convertimos el diccionario a lista en el orden correcto de columnas
-    columnas = sheet.row_values(1)
-    if not columnas:
-        columnas = list(fila_dict.keys())
-    fila = [fila_dict.get(col, "") for col in columnas]
-
-    sheet.append_row(fila)
-
-
-from datetime import datetime
 
 def reset_form_registro():
     """Reinicia los valores del formulario de registro de siniestro en st.session_state."""
@@ -305,6 +190,7 @@ def reset_form_registro():
         "siniestro_fecha": datetime.today().date(),
         "siniestro_lugar": "",
         "siniestro_medio": "Call center",
+        "Cobertura":"",
         "aseg_nombre": "",
         "aseg_rut": "",
         "aseg_tipo": "",
@@ -320,7 +206,7 @@ def reset_form_registro():
         "veh_marca": "",
         "veh_submarca": "",
         "veh_version": "",
-        "veh_anio": 1900,
+        "veh_anio": "",
         "veh_serie": "",
         "veh_motor": "",
         "veh_patente": "" 
@@ -336,7 +222,7 @@ def reset_form_registro():
 
 def limpiar_y_recargar():
     reset_form_registro()
-    #st.rerun()
+
 
 def panel_subir_documentos():
     st.subheader("⬆️ Subir archivos a drive")
@@ -359,12 +245,6 @@ def panel_subir_documentos():
         enviado = st.form_submit_button("Cargar archivos",icon="💾",use_container_width=True)
     if enviado:
         if uploaded_files:
-            #nombre_carpeta = f"SINIESTRO_{siniestro_id}"
-            #carpeta_id = obtener_carpeta(nombre_carpeta, drive_service)
-
-            #if carpeta_id is None:
-             #   st.warning("⚠️ No existe carpeta para este siniestro, verifica información ingresada")
-              #  return
             for archivo in uploaded_files:
                 subir_archivo_drive(
                     archivo.name,
@@ -373,13 +253,12 @@ def panel_subir_documentos():
                     carpeta_id,
                     drive_service
                 )
-        st.toast("Guardando cambios...", icon="⏳",duration=5)
-        time.sleep(5)
+        st.toast("Guardando cambios...", icon="⏳",duration=1)
+        time.sleep(1)
         st.toast("Archivos cargados correctamente", icon="✅")
         st.success("Archivos cargados correctamente", icon="✅")
     
 def panel_seguimiento(siniestro_id):
-
     st.subheader("📌 Agregar Estatus (Seguimiento)")
     response = (
         supabase
@@ -425,12 +304,11 @@ def panel_seguimiento(siniestro_id):
         ref = response.data[-1]
         ahora = datetime.now(ZoneInfo("America/Mexico_City"))
 
-        ref["FECHA_ESTATUS_BITaCORA"] = ahora.strftime("%Y-%m-%d %H:%M:%S")
+        ref["FECHA_ESTATUS_BITACORA"] = ahora.strftime("%Y-%m-%d %H:%M:%S")
         ref["ESTATUS"] = nuevo_estatus
         ref["COMENTARIO"] = comentario
         ref["CORREO_LIQUIDADOR"] = st.session_state["USUARIO"]
 
-        #agregar_fila(sheet_form, ref.to_dict())
         supabase.table("BitacoraOperaciones").insert(ref).execute()
 
         if uploaded_files:
@@ -447,10 +325,11 @@ def panel_seguimiento(siniestro_id):
                 )
 
         st.session_state["last_load_time"] = 0
-        st.toast("Guardando cambios...", icon="⏳",duration=2)
-        st.toast("Estatus agregado correctamente", icon="✅")
+        st.toast("Guardando cambios...", icon="⏳",duration=1)
+        time.sleep(1)
+        st.toast("Estatus agregado correctamente", icon="✅",duration=1)
         st.success("Estatus agregado correctamente", icon="✅")
-        time.sleep(2)
+        time.sleep(1)
         st.rerun()
 
 
@@ -470,7 +349,6 @@ def panel_modificar_datos(siniestro_id):
     fecha_creacion = ref["FECHA_CREACION"]
     # Campos a editar
     with st.expander("DATOS DEL SINIESTRO", expanded=False):
-    #num_siniestro = st.text_input("Número de siniestro", ref["# DE SINIESTRO"])
         num_siniestro = siniestro_id
         correlativo = st.text_input("Correlativo", ref["CORRELATIVO"])
         fecha_siniestro = st.date_input("Fecha del siniestro", pd.to_datetime(ref["FECHA_SINIESTRO"]))
@@ -482,18 +360,15 @@ def panel_modificar_datos(siniestro_id):
     with st.expander("DATOS DEL ASEGURADO", expanded=False):
         asegurado_nombre = st.text_input("Nombre asegurado", ref["NOMBRE_ASEGURADO"])
         asegurado_rut = st.text_input("RUT asegurado", ref["RUT_ASEGURADO"])
-        #asegurado_tipo = st.text_input("Tipo persona asegurado", ref["TIPO DE PERSONA ASEGURADO"])
         asegurado_tipo = st.selectbox("Tipo persona asegurado", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref.get("TIPO_DE_PERSONA_ASEGURADO") or ""))
         asegurado_tel = st.text_input("Teléfono asegurado", ref["TEL_ASEGURADO"])
         asegurado_correo = st.text_input("Correo asegurado", ref["CORREO_ASEGURADO"])
         asegurado_dir = st.text_input("Dirección asegurado", ref["DIRECCION_ASEGURADO"])
-        #medio = st.selectbox("Medio de asignación", ["Call center", "PP", "Otro"], index=["Call center","PP","Otro"].index(ref["MEDIO ASIGNACIÓN"]))
 
     # Datos propietario
     with st.expander("DATOS DEL PROPIETARIO", expanded=False):
         propietario_nombre = st.text_input("Nombre propietario", ref["NOMBRE_PROPIETARIO"])
         propietario_rut = st.text_input("RUT propietario", ref["RUT_PROPIETARIO"])
-        #propietario_tipo = st.text_input("Tipo persona propietario", ref["TIPO DE PERSONA PROPIETARIO"])
         propietario_tipo = st.selectbox("Tipo persona propietario", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref.get("TIPO_DE_PERSONA_PROPIETARIO") or ""))
         propietario_tel = st.text_input("Tel. propietario", ref["TEL_PROPIETARIO"])
         propietario_correo = st.text_input("Correo propietario", ref["CORREO_PROPIETARIO"])
@@ -542,27 +417,23 @@ def panel_modificar_datos(siniestro_id):
             "PATENTE": patente
         }).eq("NUM_SINIESTRO", siniestro_id).execute()
 
-        #guardar_dataframe(sheet_form, df)
         st.session_state["last_load_time"] = 0
-        #st.success("Datos actualizados correctamente.")
         st.toast("Guardando cambios...", icon="⏳",duration=1)
         time.sleep(1)
-        st.toast("Datos actualizados correctamente", icon="✅")
+        st.toast("Datos actualizados correctamente", icon="✅",duration=1)
         st.success("Datos actualizados correctamente", icon="✅")
+        time.sleep(1)
         st.rerun()
+
 def vista_modificar_siniestro():
 
     st.subheader("🔍 Buscar siniestro para actualizar")
-    # ============================
-    #  2. Buscar siniestro
-    # ============================
+
     busqueda = st.text_input("ESCRIBE NÚMERO DE SINIESTRO")
 
     if not busqueda:
         st.info("Ingresa un número para buscar un siniestro.")
         return
-
-    # Coincidencias en cualquier columna
     try:
         response = (
             supabase
@@ -587,14 +458,8 @@ def vista_modificar_siniestro():
 
     st.session_state["siniestro_actual"] = seleccionado
 
-    # Crear df_sel siempre actualizado
-    df_sel = response
-
     st.success(f"Siniestro encontrado", icon="✅")
 
-    # ============================
-    #  4. Tabs
-    # ============================
     tab1, tab2 = st.tabs(["✏️ MODIFICAR DATOS", "📌 SEGUIMIENTO"])
 
     with tab1:
@@ -603,9 +468,6 @@ def vista_modificar_siniestro():
     with tab2:
         panel_seguimiento(seleccionado)
 
-    # ============================
-    #  5. Regresar a inicio
-    # ============================
     if st.button("Volver al inicio", icon="⬅️", use_container_width=True):
         st.session_state.vista = None
         st.rerun()
@@ -689,11 +551,10 @@ def registro_siniestro():
                 key="veh_archivos"
             )
 
-        # >>>>>>>> AQUÍ VA EL SUBMIT BUTTON <<<<<<<<
             enviado = st.form_submit_button("Guardar",use_container_width=True,width=150,icon="💾")
 
     col1, col2, col3 = st.columns(3)
-    with col2: # Puedes usar esta columna para alineación si lo deseas
+    with col2:
         limpiar = st.button("Limpiar Registro", on_click=limpiar_y_recargar,use_container_width=True,width=100,icon="🗑️")
     with col3:
         if st.button("Volver al inicio",icon="⬅️",use_container_width=True,width=100):
@@ -717,7 +578,6 @@ def registro_siniestro():
             # Usuario login desde session_state
             Usuario_Login = st.session_state["USUARIO"]
             Liquidador_Nombre = st.session_state["LIQUIDADOR"]
-            FechaMovimiento = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             # Crear carpeta en drive
             carpeta_id = obtener_o_crear_carpeta(f"SINIESTRO_{Siniestro}", drive_service)
@@ -770,13 +630,10 @@ def registro_siniestro():
                 "DRIVE": carpeta_link
             }).execute()
 
-            #st.success("✔ Siniestro registrado correctamente.")
-            st.toast("Guardando cambios...", icon="⏳",duration=3)
-            time.sleep(3)
+            st.toast("Guardando cambios...", icon="⏳",duration=1)
+            time.sleep(1)
             st.toast("Siniestro registrado correctamente", icon="✅")
-            st.success("Siniestro registrado correctamente", icon="✅")
-            #reset_form_registro()
-            #st.rerun()
+           #st.success("Siniestro registrado correctamente", icon="✅",width=30)
 
 def vista_buscar_siniestro():
 
@@ -789,11 +646,7 @@ def vista_buscar_siniestro():
         if not siniestro:
             st.warning("Ingresa un número de siniestro.")
             return
-
-        #df = obtener_dataframe(sheet_form)
-        #df = cargar_dataframe_rate_limit(sheet_form, cooldown=15)
         try:
-            #df = cargar_dataframe_rate_limit(sheet_form, cooldown=15)
             response = (
                 supabase
                 .table("BitacoraOperaciones")
@@ -809,8 +662,7 @@ def vista_buscar_siniestro():
         if not response.data:
             st.error("Siniestro no encontrado.",icon="❌")
             return
-        
-        #resultado = df[df["# DE SINIESTRO"].astype(str) == str(siniestro)]
+
         resultado = pd.DataFrame(response.data)
 
         if resultado.empty:
@@ -883,11 +735,11 @@ def vista_buscar_siniestro():
 def vista_descargas():
     st.subheader("📥 Descargas")
     response = (
-                supabase
-                .table("BitacoraOperaciones")
-                .select("*")
-                .execute()
-            )
+        supabase
+        .table("BitacoraOperaciones")
+        .select("*")
+        .execute()
+    )
     resultado = pd.DataFrame(response.data)
     resultado.rename(columns={
         "NUM_SINIESTRO":"# DE SINIESTRO",
@@ -938,6 +790,10 @@ def vista_descargas():
     # --- BITÁCORA DE OPERACIÓN ---
     if opcion == "Bitácora de operación":
 
+        resultado["FECHA ESTATUS BITÁCORA"] = pd.to_datetime(resultado["FECHA ESTATUS BITÁCORA"],errors="coerce")
+        resultado["FECHA SINIESTRO"] = pd.to_datetime(resultado["FECHA SINIESTRO"], errors="coerce")
+        resultado["FECHA CREACIÓN"] = pd.to_datetime(resultado["FECHA CREACIÓN"], errors = "coerce")
+        
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             resultado.to_excel(writer, index=False, sheet_name="LOG")
@@ -954,10 +810,9 @@ def vista_descargas():
 
     # --- BITÁCORA DE ÚLTIMO ESTATUS ---
     elif opcion == "Bitácora de último estatus":
-        resultado["FECHA ESTATUS BITÁCORA"] = pd.to_datetime(
-            resultado["FECHA ESTATUS BITÁCORA"],
-            errors="coerce"
-        )
+        resultado["FECHA ESTATUS BITÁCORA"] = pd.to_datetime(resultado["FECHA ESTATUS BITÁCORA"],errors="coerce")
+        resultado["FECHA SINIESTRO"] = pd.to_datetime(resultado["FECHA SINIESTRO"], errors="coerce")
+        resultado["FECHA CREACIÓN"] = pd.to_datetime(resultado["FECHA CREACIÓN"], errors = "coerce")
 
         df_sorted = resultado.sort_values(
             by=["# DE SINIESTRO", "FECHA ESTATUS BITÁCORA"],
@@ -1091,7 +946,7 @@ def vista_liquidador():
     with st.sidebar:
         if st.button("BUSCAR / CONSULTAR", use_container_width=True, icon="🔎"):
             st.session_state.vista = "BUSCAR"
-        #st.markdown("<div style='height:20vh'></div>", unsafe_allow_html=True)
+
         if st.button("Cerrar sesión", use_container_width=True,icon="❌"):
             st.session_state.clear()
             st.rerun()
@@ -1169,14 +1024,6 @@ def vista_admin():
         vista_descargas()
     elif st.session_state.vista == "USUARIOS":
         vista_registro_usuario()
-        
-    #datos = sheet_form.get_all_records()
-    #df = pd.DataFrame(datos)
-
-    #st.dataframe(df)
-    #st.write("Total de registros:", len(df))
-
-
 
 # =======================================================
 #                 CONTROL DE SESIÓN
@@ -1191,12 +1038,6 @@ if not st.session_state["auth"]:
 # =======================================================
 #                 INTERFAZ PRINCIPAL
 # =======================================================
-#st.sidebar.write(f"USUARIO: **{st.session_state['USUARIO']}**")
-#st.sidebar.write(f"ROL: **{st.session_state['ROL']}**")
-
-#if st.sidebar.button("Cerrar sesión",icon="❌",use_container_width=True):
-#    st.session_state.clear()
-#    st.rerun()
 
 with st.sidebar:
     st.markdown("""
