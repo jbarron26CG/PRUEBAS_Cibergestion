@@ -936,8 +936,8 @@ def kpi_card(titulo, valor, color):
             flex-direction:column;
             justify-content:center;
         ">
-            <h4 style="margin-bottom:8px;">{titulo}</h4>
-            <h1 style="margin:0;">{valor}</h1>
+            <h5 style="margin-bottom:3px;">{titulo}</h5>
+            <h2 style="margin:0;">{valor}</h2>
         </div>
         """,
         unsafe_allow_html=True
