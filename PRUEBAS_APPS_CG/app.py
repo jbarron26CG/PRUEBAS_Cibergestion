@@ -927,17 +927,22 @@ def kpi_card(titulo, valor, color):
         f"""
         <div style="
             background-color:{color};
-            padding:5px;
-            border-radius:5px;
+            padding:16px;
+            border-radius:12px;
             text-align:center;
             color:white;
+            height:140px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
         ">
-            <h5>{titulo}</h5>
-            <h2>{valor}</h2>
+            <h4 style="margin-bottom:8px;">{titulo}</h4>
+            <h1 style="margin:0;">{valor}</h1>
         </div>
         """,
         unsafe_allow_html=True
     )
+
 
 def dash_general():
     Liquidador_Nombre = st.session_state["LIQUIDADOR"]
