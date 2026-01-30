@@ -994,7 +994,6 @@ def vista_admin():
     # Inicializar la variable si no existe
     if "vista" not in st.session_state:
         st.session_state.vista = None
-    dash_general()
     # ----------------------------------------------------
     #  MENÚ LATERAL
     # ----------------------------------------------------
@@ -1032,6 +1031,8 @@ def vista_admin():
         vista_modificar_siniestro()
     elif st.session_state.vista == "CARGA":
         panel_subir_documentos()
+    elif st.session_state.vista == None:
+        dash_general()
 
     # =====================================================================================
     #                                BUSCAR / ACTUALIZAR
