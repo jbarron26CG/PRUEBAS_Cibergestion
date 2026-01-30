@@ -940,10 +940,35 @@ def dash_general():
 
     st.subheader("📊 Métricas generales")
     st.divider()
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         st.metric("🧾 Total siniestros", total_siniestros, chart_type="area")
+    with col2:
+        st.metric("🟡 En proceso", 12)
+
+    with col3:
+        st.metric("🟢 Cerrados", 8)
+
+    with col4:
+        st.metric("🔴 Alertas", 3)
+
+    st.markdown(
+    f"""
+    <div style="
+        background-color:#1f2937;
+        padding:20px;
+        border-radius:12px;
+        text-align:center;
+        color:white;
+        ">
+        <h3>Siniestros activos</h3>
+        <h1>{total_siniestros}</h1>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 
 def vista_liquidador():
 
@@ -993,7 +1018,7 @@ def vista_liquidador():
 # =======================================================
 def vista_admin():
     Liquidador_Nombre = st.session_state["LIQUIDADOR"]
-    st.title(f"¡HOLA, {Liquidador_Nombre}!")
+    #st.title(f"¡HOLA, {Liquidador_Nombre}!")
     image_url = "https://www.segurossura.com.co/boletincovid191/Recomendaciones_COVID-19/images/logo_sura.png"
     st.logo(image=image_url,size="large")
 
