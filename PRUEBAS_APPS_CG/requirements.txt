@@ -5,7 +5,9 @@ google-auth
 google-auth-oauthlib
 google-auth-httplib2
 pandas
+from supabase import create_client
 openpyxl
 yagmail
 bcrypt
+
 
