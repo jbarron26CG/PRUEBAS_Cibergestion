@@ -420,7 +420,7 @@ def panel_modificar_datos(siniestro_id):
         st.session_state["last_load_time"] = 0
         st.toast("Guardando cambios...", icon="⏳",duration=1)
         time.sleep(1)
-        st.toast("Datos actualizados correctamente", icon="✅")
+        st.toast("Datos actualizados correctamente", icon="✅",duration=1)
         st.success("Datos actualizados correctamente", icon="✅")
         st.rerun()
 
