@@ -486,7 +486,7 @@ def panel_modificar_datos(siniestro_id):
         asegurado_tipo = st.selectbox("Tipo persona asegurado", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref["TIPO_DE_PERSONA_ASEGURADO"]))
         asegurado_tel = st.text_input("Teléfono asegurado", ref["TEL_ASEGURADO"])
         asegurado_correo = st.text_input("Correo asegurado", ref["CORREO_ASEGURADO"])
-        asegurado_dir = st.text_input("Dirección asegurado", ref["DIRECCIÓN_ASEGURADO"])
+        asegurado_dir = st.text_input("Dirección asegurado", ref["DIRECCION_ASEGURADO"])
         #medio = st.selectbox("Medio de asignación", ["Call center", "PP", "Otro"], index=["Call center","PP","Otro"].index(ref["MEDIO ASIGNACIÓN"]))
 
     # Datos propietario
@@ -497,7 +497,7 @@ def panel_modificar_datos(siniestro_id):
         propietario_tipo = st.selectbox("Tipo persona propietario", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref["TIPO_DE_PERSONA_PROPIETARIO"]))
         propietario_tel = st.text_input("Tel. propietario", ref["TEL_PROPIETARIO"])
         propietario_correo = st.text_input("Correo propietario", ref["CORREO_PROPIETARIO"])
-        propietario_dir = st.text_input("Dirección propietario", ref["DIRECCIÓN_PROPIETARIO"])
+        propietario_dir = st.text_input("Dirección propietario", ref["DIRECCION_PROPIETARIO"])
 
     # Datos vehículo
     with st.expander("DATOS DEL VEHÍCULO", expanded=False):
