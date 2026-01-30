@@ -927,13 +927,13 @@ def kpi_card(titulo, valor, color):
         f"""
         <div style="
             background-color:{color};
-            padding:20px;
-            border-radius:12px;
+            padding:10px;
+            border-radius:10px;
             text-align:center;
             color:white;
         ">
-            <h4>{titulo}</h4>
-            <h1>{valor}</h1>
+            <h5>{titulo}</h5>
+            <h2>{valor}</h2>
         </div>
         """,
         unsafe_allow_html=True
@@ -966,7 +966,7 @@ def dash_general():
     with col2:
         kpi_card("SINIESTROS CERRADOS",total_cerrados,"#00A529")
     with col3:
-        kpi_card("% CERRADOS", Per_cerrados, "#C675F5")
+        kpi_card("% CERRADOS", Per_cerrados + " %", "#C675F5")
     with col4:
         st.metric("🔴 Alertas", 3)
 
