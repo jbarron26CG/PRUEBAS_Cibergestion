@@ -936,7 +936,7 @@ def kpi_card(titulo, valor, color_bg, color_font):
             flex-direction:column;
             justify-content:left;
         ">
-            <span style="font-size:25px; font-weight:500; color:{color_font};"><strong>{titulo}</strong></span>
+            <span style="font-size:20px; font-weight:500; color:{color_font};"><strong>{titulo}</strong></span>
             <h2 style="margin:0;">{valor}</h2>
         </div>
         """,
