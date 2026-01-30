@@ -475,7 +475,7 @@ def panel_modificar_datos(siniestro_id):
         correlativo = st.text_input("Correlativo", ref["CORRELATIVO"])
         fecha_siniestro = st.date_input("Fecha del siniestro", pd.to_datetime(ref["FECHA_SINIESTRO"]))
         lugar = st.text_input("Lugar del siniestro", ref["LUGAR_SINIESTRO"])
-        medio = st.selectbox("Medio de asignación", ["Call center", "PP", "ALMA"], index=["Call center","PP","ALMA"].index(ref["MEDIO"]))
+        medio = st.selectbox("Medio de asignación", ["Call center", "PP", "ALMA"], index=["Call center","PP","ALMA"].index(ref.get("MEDIO") or ""))
         Cobertura = st.selectbox("Cobertura", ["","Robo", "Daño material"], index=["","Robo", "Daño material"].index(ref.get("COBERTURA") or ""))
 
     # Datos asegurado
@@ -483,7 +483,7 @@ def panel_modificar_datos(siniestro_id):
         asegurado_nombre = st.text_input("Nombre asegurado", ref["NOMBRE_ASEGURADO"])
         asegurado_rut = st.text_input("RUT asegurado", ref["RUT_ASEGURADO"])
         #asegurado_tipo = st.text_input("Tipo persona asegurado", ref["TIPO DE PERSONA ASEGURADO"])
-        asegurado_tipo = st.selectbox("Tipo persona asegurado", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref["TIPO_DE_PERSONA_ASEGURADO"]))
+        asegurado_tipo = st.selectbox("Tipo persona asegurado", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref.get("TIPO_DE_PERSONA_ASEGURADO") or ""))
         asegurado_tel = st.text_input("Teléfono asegurado", ref["TEL_ASEGURADO"])
         asegurado_correo = st.text_input("Correo asegurado", ref["CORREO_ASEGURADO"])
         asegurado_dir = st.text_input("Dirección asegurado", ref["DIRECCION_ASEGURADO"])
@@ -494,7 +494,7 @@ def panel_modificar_datos(siniestro_id):
         propietario_nombre = st.text_input("Nombre propietario", ref["NOMBRE_PROPIETARIO"])
         propietario_rut = st.text_input("RUT propietario", ref["RUT_PROPIETARIO"])
         #propietario_tipo = st.text_input("Tipo persona propietario", ref["TIPO DE PERSONA PROPIETARIO"])
-        propietario_tipo = st.selectbox("Tipo persona propietario", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref["TIPO_DE_PERSONA_PROPIETARIO"]))
+        propietario_tipo = st.selectbox("Tipo persona propietario", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref.get("TIPO_DE_PERSONA_PROPIETARIO") or ""))
         propietario_tel = st.text_input("Tel. propietario", ref["TEL_PROPIETARIO"])
         propietario_correo = st.text_input("Correo propietario", ref["CORREO_PROPIETARIO"])
         propietario_dir = st.text_input("Dirección propietario", ref["DIRECCION_PROPIETARIO"])
