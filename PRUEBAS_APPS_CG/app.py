@@ -923,6 +923,9 @@ def vista_registro_usuario():
 #               VISTA LIQUIDADOR
 # =======================================================
 def dash_general():
+    Liquidador_Nombre = st.session_state["LIQUIDADOR"]
+    st.header(f"¡HOLA, {Liquidador_Nombre}!")
+
     response = (
     supabase
     .table("BitacoraOperaciones")
@@ -991,7 +994,6 @@ def vista_liquidador():
 def vista_admin():
     Liquidador_Nombre = st.session_state["LIQUIDADOR"]
     st.title(f"¡HOLA, {Liquidador_Nombre}!")
-    st.header(f"¡HOLA, {Liquidador_Nombre}!")
 
     # Inicializar la variable si no existe
     if "vista" not in st.session_state:
