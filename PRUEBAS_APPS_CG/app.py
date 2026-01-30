@@ -936,7 +936,7 @@ def kpi_card(titulo, valor, color_bg, color_font):
             flex-direction:column;
             justify-content:left;
         ">
-            <span style="font-size:16px; font-weight:500; color:{color_font};"><strong>{titulo}</strong></span>
+            <span style="font-size:25px; font-weight:500; color:{color_font};"><strong>{titulo}</strong></span>
             <h2 style="margin:0;">{valor}</h2>
         </div>
         """,
@@ -967,11 +967,11 @@ def dash_general():
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        kpi_card("SINIESTROS RECIBIDOS",total_siniestros,"#FFDFC5","#FBA21B")
+        kpi_card("SINIESTROS RECIBIDOS",total_siniestros,"#FFF4EA","#FBA21B")
     with col2:
-        kpi_card("SINIESTROS CERRADOS",total_cerrados,"#D4FFC6","#047A1B")
+        kpi_card("SINIESTROS CERRADOS",total_cerrados,"#F0FFEA","#047A1B")
     with col3:
-        kpi_card("% CERRADOS", Per_cerrados, "#D2E6FF","#8DCADB")
+        kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#8DCADB")
     with col4:
         st.metric("🔴 Alertas", 3)
 
