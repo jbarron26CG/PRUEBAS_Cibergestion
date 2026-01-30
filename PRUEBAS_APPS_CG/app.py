@@ -927,8 +927,8 @@ def kpi_card(titulo, valor, color):
         f"""
         <div style="
             background-color:{color};
-            padding:10px;
-            border-radius:10px;
+            padding:5px;
+            border-radius:5px;
             text-align:center;
             color:white;
         ">
@@ -956,7 +956,7 @@ def dash_general():
 
     total_siniestros = df_dash.shape[0]
     total_cerrados = df_cerrados.shape[0]
-    Per_cerrados = int((total_cerrados/total_siniestros)*100)
+    Per_cerrados = str(int((total_cerrados/total_siniestros)*100)) + " %"
 
     st.subheader("📊 Métricas generales",divider="blue")
     col1, col2, col3, col4 = st.columns(4)
@@ -966,7 +966,7 @@ def dash_general():
     with col2:
         kpi_card("SINIESTROS CERRADOS",total_cerrados,"#00A529")
     with col3:
-        kpi_card("% CERRADOS", Per_cerrados + " %", "#C675F5")
+        kpi_card("% CERRADOS", Per_cerrados, "#C675F5")
     with col4:
         st.metric("🔴 Alertas", 3)
 
