@@ -949,7 +949,7 @@ def dash_general():
         """, unsafe_allow_html=True)
 
     with col1:
-        st.metric("🧾 Total siniestros", total_siniestros)
+        st.metric("🧾 Total siniestros", total_siniestros, chart_type="area")
 
     st.divider()
     
