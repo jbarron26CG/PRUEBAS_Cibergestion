@@ -926,7 +926,7 @@ def dash_general():
     response = (
     supabase
     .table("BitacoraOperaciones")
-    .select("NUM_SINIESTRO", count="exact")
+    .select("*")
     .execute()
 )
     df_dash = pd.DataFrame(response.data)
