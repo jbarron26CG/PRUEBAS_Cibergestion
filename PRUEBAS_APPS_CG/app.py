@@ -949,7 +949,7 @@ def vista_liquidador():
     # Inicializar la variable si no existe
     if "vista" not in st.session_state:
         st.session_state.vista = None
-
+    dash_general()
     # ----------------------------------------------------
     #  MENÚ LATERAL
     # ----------------------------------------------------
@@ -983,8 +983,7 @@ def vista_liquidador():
 
     elif st.session_state.vista == "BUSCAR":
         vista_buscar_siniestro()
-    else:
-        dash_general()
+    
 
 # =======================================================
 #                VISTA ADMINISTRADOR
