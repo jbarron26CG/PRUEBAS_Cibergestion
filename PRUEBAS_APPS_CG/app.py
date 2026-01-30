@@ -920,8 +920,25 @@ def vista_registro_usuario():
         st.session_state.vista = None
         st.rerun()
 # =======================================================
-#               VISTA LIQUIDADOR
+#               DASHBOARD GENERAL Y PARTICULAR
 # =======================================================
+def kpi_card(titulo, valor, color):
+    st.markdown(
+        f"""
+        <div style="
+            background-color:{color};
+            padding:20px;
+            border-radius:12px;
+            text-align:center;
+            color:white;
+        ">
+            <h4>{titulo}</h4>
+            <h1>{valor}</h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 def dash_general():
     Liquidador_Nombre = st.session_state["LIQUIDADOR"]
     st.header(f"¡HOLA, {Liquidador_Nombre}!")
@@ -935,40 +952,27 @@ def dash_general():
     df_dash = pd.DataFrame(response.data)
     df_dash["FECHA_ESTATUS_BITACORA"] = pd.to_datetime(df_dash["FECHA_ESTATUS_BITACORA"],errors="coerce")
     df_dash = (df_dash.sort_values(by=["NUM_SINIESTRO", "FECHA_ESTATUS_BITACORA"],ascending=[True, True]).groupby("NUM_SINIESTRO").tail(1))
+    df_cerrados = df_dash[df_dash["ESTATUS"] == "PAGO LIBERADO"]
 
     total_siniestros = df_dash.shape[0]
+    total_cerrados = df_cerrados.shape[0]
+    Per_cerrados = int((total_cerrados/total_siniestros)*100)
 
-    st.subheader("📊 Métricas generales")
-    st.divider()
+    st.subheader("📊 Métricas generales",divider="blue")
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.metric("🧾 Total siniestros", total_siniestros, chart_type="area")
+        kpi_card("SINIESTROS RECIBIDOS",total_siniestros,"#40D5E9")
     with col2:
-        st.metric("🟡 En proceso", 12)
-
+        kpi_card("SINIESTROS CERRADOS",total_cerrados,"#00A529")
     with col3:
-        st.metric("🟢 Cerrados", 8)
-
+        kpi_card("% CERRADOS", Per_cerrados, "#C675F5")
     with col4:
         st.metric("🔴 Alertas", 3)
 
-    st.markdown(
-    f"""
-    <div style="
-        background-color:#1f2937;
-        padding:20px;
-        border-radius:12px;
-        text-align:center;
-        color:white;
-        ">
-        <h3>Siniestros activos</h3>
-        <h1>{total_siniestros}</h1>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
+# =======================================================
+#               VISTA LIQUIDADOR
+# =======================================================
 
 def vista_liquidador():
 
