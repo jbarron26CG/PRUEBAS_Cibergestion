@@ -935,10 +935,25 @@ def dash_general():
     st.subheader("📊 Resumen general")
     col1, col2, col3 = st.columns(3)
 
+    with st.container():
+        st.markdown("""
+        <div style="
+            padding: 20px;
+            border-radius: 12px;
+            background-color: #f5f7fa;
+            text-align: center;
+        ">
+            <h4>🧾 Siniestros activos</h4>
+            <h2>125</h2>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col1:
         st.metric("🧾 Total siniestros", total_siniestros)
 
     st.divider()
+    
+
 
 
 def vista_liquidador():
