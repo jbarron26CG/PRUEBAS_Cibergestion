@@ -929,29 +929,20 @@ def dash_general():
     .select("NUM_SINIESTRO", count="exact")
     .execute()
 )
+    df_dash = pd.DataFrame(response.data)
+    df_dash["FECHA_ESTATUS_BITACORA"] = pd.to_datetime(df_dash["FECHA_ESTATUS_BITACORA"],errors="coerce")
+    df_dash = (df_dash.sort_values(by=["NUM_SINIESTRO", "FECHA_ESTATUS_BITACORA"],ascending=[True, True]).groupby("NUM_SINIESTRO").tail(1))
 
-    total_siniestros = response.count
+    total_siniestros = df_dash.shape[0]
 
-    st.subheader("📊 Resumen general")
+    st.subheader("📊 Métricas generales")
+    st.divider()
     col1, col2, col3 = st.columns(3)
-
-    with st.container():
-        st.markdown("""
-        <div style="
-            padding: 20px;
-            border-radius: 12px;
-            background-color: #f5f7fa;
-            text-align: center;
-        ">
-            <h4>🧾 Siniestros activos</h4>
-            <h2>125</h2>
-        </div>
-        """, unsafe_allow_html=True)
 
     with col1:
         st.metric("🧾 Total siniestros", total_siniestros, chart_type="area")
 
-    st.divider()
+    
     
 
 
