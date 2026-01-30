@@ -326,7 +326,8 @@ def panel_seguimiento(siniestro_id):
 
         st.session_state["last_load_time"] = 0
         st.toast("Guardando cambios...", icon="⏳",duration=1)
-        st.toast("Estatus agregado correctamente", icon="✅")
+        time.sleep(1)
+        st.toast("Estatus agregado correctamente", icon="✅",duration=1)
         st.success("Estatus agregado correctamente", icon="✅")
         time.sleep(1)
         st.rerun()
