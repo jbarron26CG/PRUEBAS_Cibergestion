@@ -422,6 +422,7 @@ def panel_modificar_datos(siniestro_id):
         time.sleep(1)
         st.toast("Datos actualizados correctamente", icon="✅",duration=1)
         st.success("Datos actualizados correctamente", icon="✅")
+        time.sleep(1)
         st.rerun()
 
 def vista_modificar_siniestro():
