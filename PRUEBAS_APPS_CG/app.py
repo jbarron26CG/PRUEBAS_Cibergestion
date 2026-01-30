@@ -922,21 +922,21 @@ def vista_registro_usuario():
 # =======================================================
 #               DASHBOARD GENERAL Y PARTICULAR
 # =======================================================
-def kpi_card(titulo, valor, color):
+def kpi_card(titulo, valor, color_bg, color_font):
     st.markdown(
         f"""
         <div style="
-            background-color:{color};
+            background-color:{color_bg};
             padding:16px;
             border-radius:12px;
             text-align:center;
-            color:white;
+            color:{color_font};
             height:140px;
             display:flex;
             flex-direction:column;
-            justify-content:center;
+            justify-content:left;
         ">
-            <h5 style="margin-bottom:3px;">{titulo}</h5>
+            <span style="font-size:16px; font-weight:500; color:white;">{titulo}</span>
             <h2 style="margin:0;">{valor}</h2>
         </div>
         """,
@@ -967,11 +967,11 @@ def dash_general():
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        kpi_card("SINIESTROS RECIBIDOS",total_siniestros,"#40D5E9")
+        kpi_card("SINIESTROS RECIBIDOS",total_siniestros,"#F9F9F9","#FBA21B")
     with col2:
-        kpi_card("SINIESTROS CERRADOS",total_cerrados,"#00A529")
+        kpi_card("SINIESTROS CERRADOS",total_cerrados,"#EFF9F8","#047A1B")
     with col3:
-        kpi_card("% CERRADOS", Per_cerrados, "#C675F5")
+        kpi_card("% CERRADOS", Per_cerrados, "#F9F9F9","#8DCADB")
     with col4:
         st.metric("🔴 Alertas", 3)
 
