@@ -385,9 +385,9 @@ def panel_seguimiento(siniestro_id):
         supabase
         .table("BitacoraOperaciones")
         .select("*")
+        .eq("NUM_SINIESTRO",siniestro_id)
         .execute()
     )
-
     with st.form("form_seguimiento", clear_on_submit=True):
 
         nuevo_estatus = st.selectbox(
@@ -454,90 +454,95 @@ def panel_seguimiento(siniestro_id):
         st.rerun()
 
 
-def panel_modificar_datos(df_sel, df, siniestro_id):
+def panel_modificar_datos(siniestro_id):
 
     st.subheader("✏️ Modificar Datos")
 
     # Usamos la primera fila como referencia
-    ref = df_sel.iloc[0]
-
+    response = (
+        supabase
+        .table("BitacoraOperaciones")
+        .select("*")
+        .eq("NUM_SINIESTRO",siniestro_id)
+        .execute()
+    )
+    ref = response.data[-1]
+    fecha_creacion = ref["FECHA_CREACION"]
     # Campos a editar
     with st.expander("DATOS DEL SINIESTRO", expanded=False):
     #num_siniestro = st.text_input("Número de siniestro", ref["# DE SINIESTRO"])
         num_siniestro = siniestro_id
         correlativo = st.text_input("Correlativo", ref["CORRELATIVO"])
-        fecha_siniestro = st.date_input("Fecha del siniestro", pd.to_datetime(ref["FECHA SINIESTRO"]))
-        lugar = st.text_input("Lugar del siniestro", ref["LUGAR SINIESTRO"])
-        medio = st.selectbox("Medio de asignación", ["Call center", "PP", "ALMA"], index=["Call center","PP","ALMA"].index(ref["MEDIO ASIGNACIÓN"]))
+        fecha_siniestro = st.date_input("Fecha del siniestro", pd.to_datetime(ref["FECHA_SINIESTRO"]))
+        lugar = st.text_input("Lugar del siniestro", ref["LUGAR_SINIESTRO"])
+        medio = st.selectbox("Medio de asignación", ["Call center", "PP", "ALMA"], index=["Call center","PP","ALMA"].index(ref["MEDIO"]))
         Cobertura = st.selectbox("Cobertura", ["","Robo", "Daño material"], index=["","Robo", "Daño material"].index(ref["COBERTURA"]))
 
     # Datos asegurado
     with st.expander("DATOS DEL ASEGURADO", expanded=False):
-        asegurado_nombre = st.text_input("Nombre asegurado", ref["NOMBRE ASEGURADO"])
-        asegurado_rut = st.text_input("RUT asegurado", ref["RUT ASEGURADO"])
+        asegurado_nombre = st.text_input("Nombre asegurado", ref["NOMBRE_ASEGURADO"])
+        asegurado_rut = st.text_input("RUT asegurado", ref["RUT_ASEGURADO"])
         #asegurado_tipo = st.text_input("Tipo persona asegurado", ref["TIPO DE PERSONA ASEGURADO"])
-        asegurado_tipo = st.selectbox("Tipo persona asegurado", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref["TIPO DE PERSONA ASEGURADO"]))
-        asegurado_tel = st.text_input("Teléfono asegurado", ref["TEL. ASEGURADO"])
-        asegurado_correo = st.text_input("Correo asegurado", ref["CORREO ASEGURADO"])
-        asegurado_dir = st.text_input("Dirección asegurado", ref["DIRECCIÓN ASEGURADO"])
+        asegurado_tipo = st.selectbox("Tipo persona asegurado", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref["TIPO_DE_PERSONA_ASEGURADO"]))
+        asegurado_tel = st.text_input("Teléfono asegurado", ref["TEL_ASEGURADO"])
+        asegurado_correo = st.text_input("Correo asegurado", ref["CORREO_ASEGURADO"])
+        asegurado_dir = st.text_input("Dirección asegurado", ref["DIRECCIÓN_ASEGURADO"])
         #medio = st.selectbox("Medio de asignación", ["Call center", "PP", "Otro"], index=["Call center","PP","Otro"].index(ref["MEDIO ASIGNACIÓN"]))
 
     # Datos propietario
     with st.expander("DATOS DEL PROPIETARIO", expanded=False):
-        propietario_nombre = st.text_input("Nombre propietario", ref["NOMBRE PROPIETARIO"])
-        propietario_rut = st.text_input("RUT propietario", ref["RUT PROPIETARIO"])
+        propietario_nombre = st.text_input("Nombre propietario", ref["NOMBRE_PROPIETARIO"])
+        propietario_rut = st.text_input("RUT propietario", ref["RUT_PROPIETARIO"])
         #propietario_tipo = st.text_input("Tipo persona propietario", ref["TIPO DE PERSONA PROPIETARIO"])
-        propietario_tipo = st.selectbox("Tipo persona propietario", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref["TIPO DE PERSONA PROPIETARIO"]))
-        propietario_tel = st.text_input("Tel. propietario", ref["TEL. PROPIETARIO"])
-        propietario_correo = st.text_input("Correo propietario", ref["CORREO PROPIETARIO"])
-        propietario_dir = st.text_input("Dirección propietario", ref["DIRECCIÓN PROPIETARIO"])
+        propietario_tipo = st.selectbox("Tipo persona propietario", ["","Jurídica", "Natural"], index=["","Jurídica", "Natural"].index(ref["TIPO_DE_PERSONA_PROPIETARIO"]))
+        propietario_tel = st.text_input("Tel. propietario", ref["TEL_PROPIETARIO"])
+        propietario_correo = st.text_input("Correo propietario", ref["CORREO_PROPIETARIO"])
+        propietario_dir = st.text_input("Dirección propietario", ref["DIRECCIÓN_PROPIETARIO"])
 
     # Datos vehículo
     with st.expander("DATOS DEL VEHÍCULO", expanded=False):
         marca = st.text_input("Marca", ref["MARCA"])
         submarca = st.text_input("Submarca", ref["SUBMARCA"])
-        version = st.text_input("Versión", ref["VERSIÓN"])
-        anio = st.text_input("Año/Modelo", ref["AÑO/MODELO"])
-        serie = st.text_input("Número de serie", ref["NO. SERIE"])
+        version = st.text_input("Versión", ref["VERSION"])
+        anio = st.text_input("Año/Modelo", ref["MODELO"])
+        serie = st.text_input("Número de serie", ref["NO_SERIE"])
         motor = st.text_input("Motor", ref["MOTOR"])
         patente = st.text_input("Patente", ref["PATENTE"])
 
     if st.button("💾 Guardar cambios"):
-        mask = df["# DE SINIESTRO"] == siniestro_id
-        if mask.any():
-            fecha_creacion = df.loc[mask, "FECHA CREACIÓN"].iloc[0]
+        supabase.table("BitacoraOperaciones").update({
+            "NUM_SINIESTRO": num_siniestro,
+            "FECHA_CREACION": fecha_creacion,
+            "CORRELATIVO": correlativo,
+            "FECHA_SINIESTRO": fecha_siniestro.strftime("%Y-%m-%d"),
+            "LUGAR_SINIESTRO": lugar,
+            "MEDIO": medio,
+            "COBERTURA": Cobertura,
 
-        df.loc[mask, "# DE SINIESTRO"] = num_siniestro
-        df.loc[mask, "FECHA CREACIÓN"] = fecha_creacion
-        df.loc[mask, "CORRELATIVO"] = correlativo
-        df.loc[mask, "FECHA SINIESTRO"] = fecha_siniestro.strftime("%Y-%m-%d")
-        df.loc[mask, "LUGAR SINIESTRO"] = lugar
-        df.loc[mask, "MEDIO ASIGNACIÓN"] = medio
-        df.loc[mask, "COBERTURA"] = Cobertura
+            "NOMBRE_ASEGURADO":asegurado_nombre,
+            "RUT_ASEGURADO": asegurado_rut,
+            "TIPO_DE_PERSONA_ASEGURADO": asegurado_tipo,
+            "TEL_ASEGURADO": asegurado_tel,
+            "CORREO_ASEGURADO": asegurado_correo,
+            "DIRECCION_ASEGURADO": asegurado_dir,
 
-        df.loc[mask, "NOMBRE ASEGURADO"] = asegurado_nombre
-        df.loc[mask, "RUT ASEGURADO"] = asegurado_rut
-        df.loc[mask, "TIPO DE PERSONA ASEGURADO"] = asegurado_tipo
-        df.loc[mask, "TEL. ASEGURADO"] = asegurado_tel
-        df.loc[mask, "CORREO ASEGURADO"] = asegurado_correo
-        df.loc[mask, "DIRECCIÓN ASEGURADO"] = asegurado_dir
+            "NOMBRE_PROPIETARIO": propietario_nombre,
+            "RUT_PROPIETARIO": propietario_rut,
+            "TIPO_DE_PERSONA_PROPIETARIO": propietario_tipo,
+            "TEL_PROPIETARIO": propietario_tel,
+            "CORREO_PROPIETARIO": propietario_correo,
+            "DIRECCION_PROPIETARIO": propietario_dir,
 
-        df.loc[mask, "NOMBRE PROPIETARIO"] = propietario_nombre
-        df.loc[mask, "RUT PROPIETARIO"] = propietario_rut
-        df.loc[mask, "TIPO DE PERSONA PROPIETARIO"] = propietario_tipo
-        df.loc[mask, "TEL. PROPIETARIO"] = propietario_tel
-        df.loc[mask, "CORREO PROPIETARIO"] = propietario_correo
-        df.loc[mask, "DIRECCIÓN PROPIETARIO"] = propietario_dir
+            "MARCA": marca,
+            "SUBMARCA": submarca,
+            "VERSION": version,
+            "MODELO": anio,
+            "NO_SERIE": serie,
+            "MOTOR": motor,
+            "PATENTE": patente
+        }).eq("NUM_SINIESTRO", siniestro_id).execute()
 
-        df.loc[mask, "MARCA"] = marca
-        df.loc[mask, "SUBMARCA"] = submarca
-        df.loc[mask, "VERSIÓN"] = version
-        df.loc[mask, "AÑO/MODELO"] = anio
-        df.loc[mask, "NO. SERIE"] = serie
-        df.loc[mask, "MOTOR"] = motor
-        df.loc[mask, "PATENTE"] = patente
-
-        guardar_dataframe(sheet_form, df)
+        #guardar_dataframe(sheet_form, df)
         st.session_state["last_load_time"] = 0
         #st.success("Datos actualizados correctamente.")
         st.toast("Guardando cambios...", icon="⏳",duration=5)
@@ -593,7 +598,7 @@ def vista_modificar_siniestro():
     tab1, tab2 = st.tabs(["✏️ MODIFICAR DATOS", "📌 SEGUIMIENTO"])
 
     with tab1:
-        panel_modificar_datos(df_sel, response, seleccionado)
+        panel_modificar_datos(seleccionado)
 
     with tab2:
         panel_seguimiento(seleccionado)
