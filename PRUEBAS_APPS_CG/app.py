@@ -994,7 +994,7 @@ def vista_liquidador():
 def vista_admin():
     Liquidador_Nombre = st.session_state["LIQUIDADOR"]
     st.title(f"¡HOLA, {Liquidador_Nombre}!")
-    image_url = "https://w7.pngwing.com/pngs/288/285/png-transparent-grupo-sura-insurance-agent-seguro-obligatorio-de-accidentes-personales-investment-sura-blue-text-investment.png"
+    image_url = "https://www.segurossura.com.co/boletincovid191/Recomendaciones_COVID-19/images/logo_sura.png"
     st.logo(image=image_url,size="large")
 
     # Inicializar la variable si no existe
