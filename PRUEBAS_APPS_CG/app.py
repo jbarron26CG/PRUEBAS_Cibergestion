@@ -174,7 +174,7 @@ def login():
             st.session_state["LIQUIDADOR"] = registro["LIQUIDADOR"]
             st.session_state["auth"] = True
 
-            st.success(f"Acceso exitoso. Bienvenido {registro['LIQUIDADOR']}")
+            st.success(f"Acceso exitoso")
             st.rerun()
     else:
         ingreso = st.button("Ingresar",use_container_width=True,disabled=True)
@@ -922,6 +922,25 @@ def vista_registro_usuario():
 # =======================================================
 #               VISTA LIQUIDADOR
 # =======================================================
+def dash_general():
+    response = (
+    supabase
+    .table("BitacoraOperaciones")
+    .select("NUM_SINIESTRO", count="exact")
+    .execute()
+)
+
+    total_siniestros = response.count
+
+    st.subheader("📊 Resumen general")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("🧾 Total siniestros", total_siniestros)
+
+    st.divider()
+
+
 def vista_liquidador():
 
     Liquidador_Nombre = st.session_state["LIQUIDADOR"]
@@ -964,6 +983,8 @@ def vista_liquidador():
 
     elif st.session_state.vista == "BUSCAR":
         vista_buscar_siniestro()
+    else:
+        dash_general()
 
 # =======================================================
 #                VISTA ADMINISTRADOR
