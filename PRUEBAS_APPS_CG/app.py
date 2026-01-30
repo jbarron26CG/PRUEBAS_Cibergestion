@@ -957,7 +957,7 @@ def dash_general():
     df_dash = pd.DataFrame(response.data)
     df_dash["FECHA_ESTATUS_BITACORA"] = pd.to_datetime(df_dash["FECHA_ESTATUS_BITACORA"],errors="coerce")
     df_dash = (df_dash.sort_values(by=["NUM_SINIESTRO", "FECHA_ESTATUS_BITACORA"],ascending=[True, True]).groupby("NUM_SINIESTRO").tail(1))
-    df_cerrados = df_dash[(df_dash["ESTATUS"] == "PAGO LIBERADO") | df_dash["ESTATUS"] == "SOLICITUD DE PAGO GENERADA"]
+    df_cerrados = df_dash[(df_dash["ESTATUS"] == "PAGO LIBERADO") | (df_dash["ESTATUS"] == "SOLICITUD DE PAGO GENERADA")]
     
     total_siniestros = df_dash.shape[0]
     total_cerrados = df_cerrados.shape[0]
