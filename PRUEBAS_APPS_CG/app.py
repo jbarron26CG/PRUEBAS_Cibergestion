@@ -509,7 +509,7 @@ def panel_modificar_datos(siniestro_id):
         motor = st.text_input("Motor", ref["MOTOR"])
         patente = st.text_input("Patente", ref["PATENTE"])
 
-    if st.button("💾 Guardar cambios"):
+    if st.button("💾 Guardar cambios", use_container_width=True):
         supabase.table("BitacoraOperaciones").update({
             "NUM_SINIESTRO": num_siniestro,
             "FECHA_CREACION": fecha_creacion,
@@ -545,8 +545,8 @@ def panel_modificar_datos(siniestro_id):
         #guardar_dataframe(sheet_form, df)
         st.session_state["last_load_time"] = 0
         #st.success("Datos actualizados correctamente.")
-        st.toast("Guardando cambios...", icon="⏳",duration=5)
-        time.sleep(5)
+        st.toast("Guardando cambios...", icon="⏳",duration=1)
+        time.sleep(1)
         st.toast("Datos actualizados correctamente", icon="✅")
         st.success("Datos actualizados correctamente", icon="✅")
         st.rerun()
