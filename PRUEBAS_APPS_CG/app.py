@@ -259,7 +259,6 @@ def panel_subir_documentos():
         st.success("Archivos cargados correctamente", icon="✅")
     
 def panel_seguimiento(siniestro_id):
-
     st.subheader("📌 Agregar Estatus (Seguimiento)")
     response = (
         supabase
@@ -305,7 +304,7 @@ def panel_seguimiento(siniestro_id):
         ref = response.data[-1]
         ahora = datetime.now(ZoneInfo("America/Mexico_City"))
 
-        ref["FECHA_ESTATUS_BITaCORA"] = ahora.strftime("%Y-%m-%d %H:%M:%S")
+        ref["FECHA_ESTATUS_BITACORA"] = ahora.strftime("%Y-%m-%d %H:%M:%S")
         ref["ESTATUS"] = nuevo_estatus
         ref["COMENTARIO"] = comentario
         ref["CORREO_LIQUIDADOR"] = st.session_state["USUARIO"]
