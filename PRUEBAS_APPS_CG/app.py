@@ -562,19 +562,6 @@ def registro_siniestro():
             st.rerun()
     # ======================= VALIDACIONES =============================
         if enviado:
-            errores = []
-
-            if not Siniestro:
-                errores.append("El número de siniestro es obligatorio.")
-
-            email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$"
-            if Asegurado_Correo and not re.match(email_regex, Asegurado_Correo):
-                errores.append("El correo del asegurado no es válido.")
-
-            if errores:
-                st.error("Revisa lo siguiente:\n- " + "\n- ".join(errores))
-                return
-
             response = (
                 supabase
                 .table("BitacoraOperaciones")
@@ -586,6 +573,19 @@ def registro_siniestro():
 
             if response.data:
                 st.error("El número de expediente ya se encuentra registrado. Use un ID diferente o revise la pestaña “Modificar datos”.", icon="🚨")
+                return
+
+            errores = []
+
+            if not Siniestro:
+                errores.append("El número de siniestro es obligatorio.")
+
+            email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+            if Asegurado_Correo and not re.match(email_regex, Asegurado_Correo):
+                errores.append("El correo del asegurado no es válido.")
+
+            if errores:
+                st.error("Revisa lo siguiente:\n- " + "\n- ".join(errores))
                 return
             
             # Usuario login desde session_state
