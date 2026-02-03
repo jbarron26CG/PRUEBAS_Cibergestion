@@ -1014,14 +1014,15 @@ def dash_general():
     ]
 
     df_cerrados = df_dash[df_dash["ESTATUS"].isin(estatus_cierre)].copy()
-    df_cerrados["DIAS_HABILES"] = np.busday_count(df_cerrados["FECHA_CREACION"].dt.date, df_cerrados["FECHA_ESTATUS_BITACORA"].dt.date)
+    df_cerrados["DIAS_HABILES"] = np.busday_count(df_cerrados["FECHA_CREACION"].dt.date.values, 
+                                                  df_cerrados["FECHA_ESTATUS_BITACORA"].dt.date.values)
 
     #df_cerrados = df_dash[(df_dash["ESTATUS"] == "PAGO LIBERADO") | (df_dash["ESTATUS"] == "SOLICITUD DE PAGO GENERADA")]
     
     total_siniestros = df_dash.shape[0]
     total_cerrados = df_cerrados.shape[0]
     Per_cerrados = str(int((total_cerrados/total_siniestros)*100)) + " %"
-    promedio_dias_cierre = df_cerrados["DIAS_HABILES"].mean()
+    promedio_dias_cierre = round(df_cerrados["DIAS_HABILES"].mean(), 1)
 
 
     st.subheader("MÉTRICAS GENERALES",divider="blue")
