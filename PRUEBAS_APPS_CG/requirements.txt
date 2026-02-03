@@ -10,4 +10,4 @@ yagmail
 bcrypt
 supabase
 altair
-
+numpy
