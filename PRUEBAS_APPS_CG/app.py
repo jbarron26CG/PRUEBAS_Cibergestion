@@ -1035,6 +1035,9 @@ def vista_liquidador():
 
     elif st.session_state.vista == "BUSCAR":
         vista_buscar_siniestro()
+        
+    elif st.session_state.vista == None:
+        dash_general()
     
 
 # =======================================================
@@ -1081,7 +1084,6 @@ def vista_admin():
     # =====================================================================================
     if st.session_state.vista == "REGISTRAR":
         registro_siniestro()
-
     elif st.session_state.vista == "ACTUALIZAR":
         vista_modificar_siniestro()
     elif st.session_state.vista == "CARGA":
