@@ -572,7 +572,7 @@ def registro_siniestro():
             )
 
             if response.data:
-                st.error("El número de expediente ya se encuentra registrado. Use un ID diferente o revise la pestaña “Modificar datos”.", icon="🚨")
+                st.toast("El número de expediente ya se encuentra registrado. Use un ID diferente o revise la pestaña “Modificar datos”.", icon="🚨",duration=3)
                 return
 
             errores = []
