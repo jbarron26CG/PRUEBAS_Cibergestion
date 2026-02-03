@@ -981,7 +981,7 @@ def dash_general():
     count_estatus = df_dash.groupby("ESTATUS").size().reset_index(name="TOTAL")
     st.bar_chart(count_estatus, x="ESTATUS", y="TOTAL",
                  x_label="TOTAL DE SINIESTROS POR ESTATUS", horizontal=True,
-                 color="#ed2cff87",sort="TOTAL")
+                 color="#ed2cff87",sort="-TOTAL")
 
 # =======================================================
 #               VISTA LIQUIDADOR
