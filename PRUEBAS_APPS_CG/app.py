@@ -953,7 +953,7 @@ def dash_general():
     .table("BitacoraOperaciones")
     .select("*")
     .execute()
-)
+    )
     df_dash = pd.DataFrame(response.data)
     df_dash["FECHA_ESTATUS_BITACORA"] = pd.to_datetime(df_dash["FECHA_ESTATUS_BITACORA"],errors="coerce")
     df_dash = (df_dash.sort_values(by=["NUM_SINIESTRO", "FECHA_ESTATUS_BITACORA"],ascending=[True, True]).groupby("NUM_SINIESTRO").tail(1))
@@ -975,7 +975,10 @@ def dash_general():
     with col4:
         kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#6DA1AF")
 
-    st.bar_chart(df_dash,x="ESTATUS",x_label="TOTAL DE SINIESTROS POR ESTATUS",horizontal=True)
+    st.markdown("### 📊 Total de siniestros por estatus")
+    count_estatus = df_dash.groupby("ESTATUS").size().reset_index(name="TOTAL")
+
+    st.bar_chart(count_estatus,x="TOTAL",y="ESTATUS",x_label="TOTAL DE SINIESTROS POR ESTATUS",horizontal=True)
 
 # =======================================================
 #               VISTA LIQUIDADOR
