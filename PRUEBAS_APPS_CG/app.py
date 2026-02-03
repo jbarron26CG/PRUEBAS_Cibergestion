@@ -18,6 +18,7 @@ from supabase import create_client
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.utils import get_column_letter
 import altair as alt
+import numpy as np
 
 supabase = create_client(
     st.secrets["SUPABASE_URL"],
@@ -1002,12 +1003,26 @@ def dash_general():
     )
     df_dash = pd.DataFrame(response.data)
     df_dash["FECHA_ESTATUS_BITACORA"] = pd.to_datetime(df_dash["FECHA_ESTATUS_BITACORA"],errors="coerce")
+    df_dash["FECHA_CREACION"] = pd.to_datetime(df_dash["FECHA_CREACION"], errors="coerce")
     df_dash = (df_dash.sort_values(by=["NUM_SINIESTRO", "FECHA_ESTATUS_BITACORA"],ascending=[True, True]).groupby("NUM_SINIESTRO").tail(1))
-    df_cerrados = df_dash[(df_dash["ESTATUS"] == "PAGO LIBERADO") | (df_dash["ESTATUS"] == "SOLICITUD DE PAGO GENERADA")]
+
+    estatus_cierre = [
+    "PAGO LIBERADO",
+    "CIERRE POR DESISTIMIENTO",
+    "CIERRE POR RECHAZO",
+    "SOLICITUD DE PAGO GENERADA"
+    ]
+
+    df_cerrados = df_dash[df_dash["ESTATUS"].isin(estatus_cierre)].copy()
+    df_cerrados["DIAS_HABILES"] = np.busday_count(df_cerrados["FECHA_CREACION"].dt.date, df_cerrados["FECHA_ESTATUS_BITACORA"].dt.date)
+
+    #df_cerrados = df_dash[(df_dash["ESTATUS"] == "PAGO LIBERADO") | (df_dash["ESTATUS"] == "SOLICITUD DE PAGO GENERADA")]
     
     total_siniestros = df_dash.shape[0]
     total_cerrados = df_cerrados.shape[0]
     Per_cerrados = str(int((total_cerrados/total_siniestros)*100)) + " %"
+    promedio_dias_cierre = df_cerrados["DIAS_HABILES"].mean()
+
 
     st.subheader("MÉTRICAS GENERALES",divider="blue")
     col1, col2, col3, col4 = st.columns(4)
@@ -1019,7 +1034,7 @@ def dash_general():
     with col3:
         kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#6DA1AF")
     with col4:
-        kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#6DA1AF")
+        kpi_card("DÍAS PROMEDIO CIERRE", promedio_dias_cierre, "#E6F1FD","#6DA1AF")
 
     #Agregamos gráficas generales
     st.divider()
