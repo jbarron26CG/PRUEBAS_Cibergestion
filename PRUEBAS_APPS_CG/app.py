@@ -1032,7 +1032,7 @@ def dash_general():
         st.bar_chart(count_estatus, x="ESTATUS", y="TOTAL",
                     x_label="TOTAL DE SINIESTROS POR ESTATUS", horizontal=True,
                     color="#ed2cff87",sort="-TOTAL")
-    
+        st.divider()
     with col1:
         st.markdown("TOTAL DE SINIESTROS ASIGNADOS POR LIQUIDADOR")
         count_liquidador = df_dash.groupby("LIQUIDADOR").size().reset_index(name="TOTAL")
@@ -1052,7 +1052,7 @@ def dash_general():
         ).properties(height=350)
 
         st.altair_chart(chart_estatus, use_container_width=True)
-
+        st.divider()
     with col2:
         st.markdown("### TOTAL DE SINIESTROS POR LIQUIDADOR")
 
