@@ -1054,7 +1054,25 @@ def dash_general():
 def dash_liquidador():
     st.divider()
     Liquidador = st.session_state["LIQUIDADOR"]
-    st.text("Registro con el último estatus de tus siniestros asignados. Lo puedes descargar haciendo clic en la parte superior derecha de la tabla")
+    st.subheader("MÉTRICAS PARTICULARES",divider="blue")
+
+    st.markdown(
+    """
+    <div style="
+        background-color:#f3f4f6;
+        padding:12px;
+        border-left:5px solid #3b82f6;
+        border-radius:6px;
+        font-size:14px;
+    ">
+        📄 <strong>Último estatus de tus siniestros asignados.</strong><br>
+        Puedes descargar la tabla haciendo clic en el ícono de descarga en la esquina superior derecha.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
     response = (
     supabase
     .table("BitacoraOperaciones")
