@@ -977,7 +977,6 @@ def dash_general():
 
     st.markdown("### 📊 Total de siniestros por estatus")
     count_estatus = df_dash.groupby("ESTATUS").size().reset_index(name="TOTAL")
-
     st.bar_chart(count_estatus,x="TOTAL",y="ESTATUS",x_label="TOTAL DE SINIESTROS POR ESTATUS",horizontal=True)
 
 # =======================================================
