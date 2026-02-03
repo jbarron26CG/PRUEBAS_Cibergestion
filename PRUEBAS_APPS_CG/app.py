@@ -977,11 +977,18 @@ def dash_general():
 
     #Agregamos gráficas generales
     st.divider()
-
+    st.markdown("TOTAL DE SINIESTROS REGISTRADOS POR ESTATUS")
     count_estatus = df_dash.groupby("ESTATUS").size().reset_index(name="TOTAL")
     st.bar_chart(count_estatus, x="ESTATUS", y="TOTAL",
                  x_label="TOTAL DE SINIESTROS POR ESTATUS", horizontal=True,
                  color="#ed2cff87",sort="-TOTAL")
+    
+    st.divider()
+    st.markdown("TOTAL DE SINIESTROS ASIGNADOS POR LIQUIDADOR")
+    count_liquidador = df_dash.groupby("LIQUIDADOR").size().reset_index(name="TOTAL")
+    st.bar_chart(count_liquidador, x="LIQUIDADOR", y="TOTAL",
+                 x_label="TOTAL DE SINIESTROS POR LIQUIDADOR", horizontal=True,
+                 color="#992cff86",sort="-TOTAL")
 
 # =======================================================
 #               VISTA LIQUIDADOR
