@@ -990,6 +990,23 @@ def kpi_card(titulo, valor, color_bg, color_font):
         unsafe_allow_html=True
     )
 
+def kpi_2(backcolor, border, text1, text2, valor):
+    st.markdown(
+        f"""
+        <div style="
+            background-color:{backcolor};
+            padding:12px;
+            border-left:5px solid {border};
+            border-radius:6px;
+            font-size:14px;
+        ">
+            📄 <strong>{text1}</strong><br>
+            {valor}<br>
+            <strong>{text2}</strong>
+        </div>
+        """,
+        unsafe_allow_html=True
+        )
 
 def dash_general():
     Liquidador_Nombre = st.session_state["LIQUIDADOR"]
@@ -1029,13 +1046,17 @@ def dash_general():
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        kpi_card("SINIESTROS RECIBIDOS",total_siniestros,"#FFF4EA","#FBA21B")
+        #kpi_card("SINIESTROS RECIBIDOS",total_siniestros,"#FFF4EA","#FBA21B")
+        kpi_2("#FFF4EA","#FBA21B","SINIESTROS","RECIBIDOS",total_siniestros)
     with col2:
-        kpi_card("SINIESTROS CERRADOS",total_cerrados,"#F0FFEA","#047A1B")
+        #kpi_card("SINIESTROS CERRADOS",total_cerrados,"#F0FFEA","#047A1B")
+        kpi_2("#F0FFEA","#047A1B","SINIESTROS","CERRADOS",total_cerrados)
     with col3:
-        kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#6DA1AF")
+        #kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#6DA1AF")
+        kpi_2("#E6F1FD","#6DA1AF","%","CERRADOS",Per_cerrados)
     with col4:
-        kpi_card("DÍAS PROMEDIO CIERRE", promedio_dias_cierre, "#E6F1FD","#6DA1AF")
+        #kpi_card("DÍAS PROMEDIO CIERRE", promedio_dias_cierre, "#E6F1FD","#6DA1AF")
+        kpi_2("#FFF5F7","#A82A50","DÍAS PROMEDIO","CIERRE",promedio_dias_cierre)
 
     #Agregamos gráficas generales
     st.divider()
