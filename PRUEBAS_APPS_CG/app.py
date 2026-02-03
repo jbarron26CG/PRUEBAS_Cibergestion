@@ -995,15 +995,15 @@ def kpi_card(backcolor, border, text1, text2, valor):
         f"""
         <div style="
             background-color:{backcolor};
-            padding:12px;
-            border-left:5px solid {border};
+            padding:5px;
+            border-left:7px solid {border};
             border-radius:6px;
             font-size:20px;
             text-align:center;
         ">
-            <h5><strong>{text1}</strong><br></h5>
+            <h3><strong>{text1}</strong><br></h3>
             <h4>{valor}<br></h4>
-            <h5><strong>{text2}</strong></h5>
+            <h3><strong>{text2}</strong></h3>
         </div>
         """,
         unsafe_allow_html=True
