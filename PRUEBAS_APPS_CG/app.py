@@ -1002,8 +1002,8 @@ def kpi_card(backcolor, border, text1, text2, valor):
             text-align:center;
         ">
             <h5><strong>{text1}</strong><br></h5>
-            <h6>{valor}<b6></h6>
-           <h5><strong>{text2}</strong></h5>
+            <h4>{valor}<br></h4>
+            <h5><strong>{text2}</strong></h5>
         </div>
         """,
         unsafe_allow_html=True
