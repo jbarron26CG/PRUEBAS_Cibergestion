@@ -1009,7 +1009,7 @@ def dash_general():
     total_cerrados = df_cerrados.shape[0]
     Per_cerrados = str(int((total_cerrados/total_siniestros)*100)) + " %"
 
-    st.subheader("📊 Métricas generales",divider="blue")
+    st.subheader("MÉTRICAS GENERALES",divider="blue")
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
@@ -1023,21 +1023,18 @@ def dash_general():
 
     #Agregamos gráficas generales
     st.divider()
-    
     col1, col2 = st.columns(2)
 
     count_estatus = df_dash.groupby("ESTATUS").size().reset_index(name="TOTAL")
     count_liquidador = df_dash.groupby("LIQUIDADOR").size().reset_index(name="TOTAL")
-    
-    st.divider()
-    col1, col2 = st.columns(2)
+
     with col1:
         st.markdown("### TOTAL DE SINIESTROS POR ESTATUS")
 
         chart_estatus = alt.Chart(count_estatus).mark_bar().encode(
             x=alt.X("TOTAL:Q", title="TOTAL"),
             y=alt.Y("ESTATUS:N", sort="-x", title=""),
-            color=alt.value("#ed2cff87"),
+            color=alt.value("#0fb3ff86"),
             tooltip=["ESTATUS", "TOTAL"]
         ).properties(height=400)
 
