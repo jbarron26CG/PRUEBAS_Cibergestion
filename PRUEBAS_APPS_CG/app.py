@@ -575,6 +575,19 @@ def registro_siniestro():
                 st.error("Revisa lo siguiente:\n- " + "\n- ".join(errores))
                 return
 
+            response = (
+                supabase
+                .table("BitacoraOperaciones")
+                .select("*")
+                .eq("NUM_SINIESTRO",Siniestro)
+                .limit(1)
+                .execute()
+            )
+
+            if response.data:
+                st.error("El número de expediente ya se encuentra registrado. Use un ID diferente o revise la pestaña “Modificar datos”.", icon="🚨")
+                return
+            
             # Usuario login desde session_state
             Usuario_Login = st.session_state["USUARIO"]
             Liquidador_Nombre = st.session_state["LIQUIDADOR"]
@@ -1035,7 +1048,7 @@ def vista_liquidador():
 
     elif st.session_state.vista == "BUSCAR":
         vista_buscar_siniestro()
-        
+
     elif st.session_state.vista == None:
         dash_general()
     
