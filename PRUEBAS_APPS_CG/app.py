@@ -1014,8 +1014,8 @@ def dash_general():
     ]
 
     df_cerrados = df_dash[df_dash["ESTATUS"].isin(estatus_cierre)]
-    df_cerrados["DIAS_HABILES"] = np.busday_count(df_cerrados["FECHA_CREACION"].dt.date.values, 
-                                                  df_cerrados["FECHA_ESTATUS_BITACORA"].dt.date.values)
+    df_cerrados["DIAS_HABILES"] = np.busday_count(df_cerrados["FECHA_CREACION"].values.astype("datetime64[D]"), 
+                                                  df_cerrados["FECHA_ESTATUS_BITACORA"].values.astype("datetime64[D]"))
 
     #df_cerrados = df_dash[(df_dash["ESTATUS"] == "PAGO LIBERADO") | (df_dash["ESTATUS"] == "SOLICITUD DE PAGO GENERADA")]
     
