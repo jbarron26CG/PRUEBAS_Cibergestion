@@ -15,6 +15,8 @@ from zoneinfo import ZoneInfo
 import yagmail
 import time
 from supabase import create_client
+from openpyxl.styles import PatternFill, Font, Alignment
+from openpyxl.utils import get_column_letter
 
 supabase = create_client(
     st.secrets["SUPABASE_URL"],
@@ -810,6 +812,21 @@ def vista_descargas():
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             resultado.to_excel(writer, index=False, sheet_name="LOG")
+            ws = writer.book["LOG"]
+            header_fill = PatternFill("solid", fgColor="1F4E78")  # azul
+            header_font = Font(bold=True, color="FFFFFF")
+            header_align = Alignment(
+                horizontal="center",
+                vertical="center",
+                wrap_text=True
+            )
+
+            for col_idx, cell in enumerate(ws[1], start=1):
+                cell.fill = header_fill
+                cell.font = header_font
+                cell.alignment = header_align
+                ws.column_dimensions[get_column_letter(col_idx)].width = 22
+            ws.row_dimensions[1].height = 35
 
         st.download_button(
             label="Descargar bitácora de operación",
@@ -837,6 +854,21 @@ def vista_descargas():
         buffer = io.BytesIO()
         with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
             df_ultimos.to_excel(writer, index=False, sheet_name="LOG")
+            ws = writer.book["LOG"]
+            header_fill = PatternFill("solid", fgColor="1F4E78")  # azul
+            header_font = Font(bold=True, color="FFFFFF")
+            header_align = Alignment(
+                horizontal="center",
+                vertical="center",
+                wrap_text=True
+            )
+
+            for col_idx, cell in enumerate(ws[1], start=1):
+                cell.fill = header_fill
+                cell.font = header_font
+                cell.alignment = header_align
+                ws.column_dimensions[get_column_letter(col_idx)].width = 22
+            ws.row_dimensions[1].height = 35
 
         st.download_button(
             label="Descargar bitácora de último estatus",
