@@ -969,7 +969,7 @@ def vista_registro_usuario():
 # =======================================================
 #               DASHBOARD GENERAL Y PARTICULAR
 # =======================================================
-def kpi_card(titulo, valor, color_bg, color_font):
+def kpi_card_2(titulo, valor, color_bg, color_font):
     st.markdown(
         f"""
         <div style="
@@ -990,7 +990,7 @@ def kpi_card(titulo, valor, color_bg, color_font):
         unsafe_allow_html=True
     )
 
-def kpi_2(backcolor, border, text1, text2, valor):
+def kpi_card(backcolor, border, text1, text2, valor):
     st.markdown(
         f"""
         <div style="
@@ -998,11 +998,12 @@ def kpi_2(backcolor, border, text1, text2, valor):
             padding:12px;
             border-left:5px solid {border};
             border-radius:6px;
-            font-size:14px;
+            font-size:20px;
+            text-align:center;
         ">
-            📄 <strong>{text1}</strong><br>
-            {valor}<br>
-            <strong>{text2}</strong>
+            <h5><strong>{text1}</strong><br></h5>
+            <h6>{valor}<b6></h6>
+           <h5><strong>{text2}</strong></h5>
         </div>
         """,
         unsafe_allow_html=True
@@ -1047,16 +1048,16 @@ def dash_general():
 
     with col1:
         #kpi_card("SINIESTROS RECIBIDOS",total_siniestros,"#FFF4EA","#FBA21B")
-        kpi_2("#FFF4EA","#FBA21B","SINIESTROS","RECIBIDOS",total_siniestros)
+        kpi_card("#FFF4EA","#FBA21B","SINIESTROS","RECIBIDOS",total_siniestros)
     with col2:
         #kpi_card("SINIESTROS CERRADOS",total_cerrados,"#F0FFEA","#047A1B")
-        kpi_2("#F0FFEA","#047A1B","SINIESTROS","CERRADOS",total_cerrados)
+        kpi_card("#F0FFEA","#047A1B","SINIESTROS","CERRADOS",total_cerrados)
     with col3:
         #kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#6DA1AF")
-        kpi_2("#E6F1FD","#6DA1AF","%","CERRADOS",Per_cerrados)
+        kpi_card("#E6F1FD","#6DA1AF","%","CERRADOS",Per_cerrados)
     with col4:
         #kpi_card("DÍAS PROMEDIO CIERRE", promedio_dias_cierre, "#E6F1FD","#6DA1AF")
-        kpi_2("#FFF5F7","#A82A50","DÍAS PROMEDIO","CIERRE",promedio_dias_cierre)
+        kpi_card("#FFF5F7","#A82A50","DÍAS PROMEDIO","CIERRE",promedio_dias_cierre)
 
     #Agregamos gráficas generales
     st.divider()
