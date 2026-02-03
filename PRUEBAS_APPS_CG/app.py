@@ -976,9 +976,10 @@ def dash_general():
         kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#6DA1AF")
 
     #Agregamos gráficas generales
-    st.markdown("### 📊 Total de siniestros por estatus")
-    #count_estatus = df_dash.groupby("ESTATUS").size().reset_index(name="TOTAL")
-    #st.bar_chart(count_estatus, x="TOTAL", y="ESTATUS",x_label="TOTAL DE SINIESTROS POR ESTATUS", horizontal=True)
+    st.divider()
+
+    count_estatus = df_dash.groupby("ESTATUS").size().reset_index(name="TOTAL")
+    st.bar_chart(count_estatus, x="TOTAL", y="ESTATUS",x_label="TOTAL DE SINIESTROS POR ESTATUS", horizontal=True)
 
 # =======================================================
 #               VISTA LIQUIDADOR
