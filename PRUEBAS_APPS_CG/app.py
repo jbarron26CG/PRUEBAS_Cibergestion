@@ -1026,18 +1026,8 @@ def dash_general():
     
     col1, col2 = st.columns(2)
 
-    with col1:
-        st.markdown("TOTAL DE SINIESTROS REGISTRADOS POR ESTATUS")
-        count_estatus = df_dash.groupby("ESTATUS").size().reset_index(name="TOTAL")
-        st.bar_chart(count_estatus, x="ESTATUS", y="TOTAL",
-                    x_label="TOTAL DE SINIESTROS POR ESTATUS", horizontal=True,
-                    color="#ed2cff87",sort="-TOTAL")
-    with col2:
-        st.markdown("TOTAL DE SINIESTROS ASIGNADOS POR LIQUIDADOR")
-        count_liquidador = df_dash.groupby("LIQUIDADOR").size().reset_index(name="TOTAL")
-        st.bar_chart(count_liquidador, x="LIQUIDADOR", y="TOTAL",
-                    x_label="TOTAL DE SINIESTROS POR LIQUIDADOR", horizontal=True,
-                    color="#992cff86",sort="-TOTAL")
+    count_estatus = df_dash.groupby("ESTATUS").size().reset_index(name="TOTAL")
+    count_liquidador = df_dash.groupby("LIQUIDADOR").size().reset_index(name="TOTAL")
     
     st.divider()
     col1, col2 = st.columns(2)
@@ -1045,22 +1035,22 @@ def dash_general():
         st.markdown("### TOTAL DE SINIESTROS POR ESTATUS")
 
         chart_estatus = alt.Chart(count_estatus).mark_bar().encode(
-            x=alt.X("TOTAL:Q", title="Total"),
+            x=alt.X("TOTAL:Q", title="TOTAL"),
             y=alt.Y("ESTATUS:N", sort="-x", title=""),
             color=alt.value("#ed2cff87"),
             tooltip=["ESTATUS", "TOTAL"]
-        ).properties(height=350)
+        ).properties(height=400)
 
         st.altair_chart(chart_estatus, use_container_width=True)
     with col2:
         st.markdown("### TOTAL DE SINIESTROS POR LIQUIDADOR")
 
         chart_liquidador = alt.Chart(count_liquidador).mark_bar().encode(
-            x=alt.X("TOTAL:Q", title="Total"),
+            x=alt.X("TOTAL:Q", title="TOTAL"),
             y=alt.Y("LIQUIDADOR:N", sort="-x", title=""),
             color=alt.value("#992cff86"),
             tooltip=["LIQUIDADOR", "TOTAL"]
-        ).properties(height=350)
+        ).properties(height=400)
 
         st.altair_chart(chart_liquidador, use_container_width=True)
 # =======================================================
