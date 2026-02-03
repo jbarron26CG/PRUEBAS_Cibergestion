@@ -975,6 +975,8 @@ def dash_general():
     with col4:
         kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#6DA1AF")
 
+    st.bar_chart(df_dash,x="ESTATUS",x_label="TOTAL DE SINIESTROS POR ESTATUS",horizontal=True)
+
 # =======================================================
 #               VISTA LIQUIDADOR
 # =======================================================
