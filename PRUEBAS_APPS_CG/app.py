@@ -1022,6 +1022,9 @@ def dash_general():
         kpi_card("% CERRADOS", Per_cerrados, "#E6F1FD","#6DA1AF")
 
     #Agregamos gráficas generales
+    
+    col1, col2 = st.columns(2)
+
     st.divider()
     with col1:
         st.markdown("TOTAL DE SINIESTROS REGISTRADOS POR ESTATUS")
