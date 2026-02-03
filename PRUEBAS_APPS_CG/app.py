@@ -1061,10 +1061,45 @@ def dash_liquidador():
     .eq("LIQUIDADOR", Liquidador)
     .execute()
     )
+    
     df_dash = pd.DataFrame(response.data)
     df_dash["FECHA_ESTATUS_BITACORA"] = pd.to_datetime(df_dash["FECHA_ESTATUS_BITACORA"],errors="coerce")
     df_dash = (df_dash.sort_values(by=["NUM_SINIESTRO", "FECHA_ESTATUS_BITACORA"],ascending=[True, True]).groupby("NUM_SINIESTRO").tail(1))
-    
+    df_dash.rename(columns={
+            "NUM_SINIESTRO":"# DE SINIESTRO",
+            "CORRELATIVO":"CORRELATIVO",
+            "FECHA_SINIESTRO":"FECHA SINIESTRO",
+            "LUGAR_SINIESTRO":"LUGAR SINIESTRO",
+            "MEDIO":"MEDIO ASIGNACIÓN",
+            "COBERTURA":"COBERTURA",
+            "MARCA":"MARCA",
+            "SUBMARCA":"SUBMARCA",
+            "VERSION":"VERSIÓN",
+            "MODELO":"AÑO/MODELO",
+            "NO_SERIE":"NO. SERIE",
+            "MOTOR":"MOTOR",
+            "PATENTE":"PATENTE",
+            "FECHA_CREACION":"FECHA CREACIÓN",
+            "FECHA_ESTATUS_BITACORA":"FECHA ESTATUS BITÁCORA",
+            "ESTATUS":"ESTATUS",
+            "NOMBRE_ASEGURADO":"NOMBRE ASEGURADO",
+            "RUT_ASEGURADO":"RUT ASEGURADO",
+            "TIPO_DE_PERSONA_ASEGURADO":"TIPO DE PERSONA ASEGURADO",
+            "TEL_ASEGURADO":"TEL. ASEGURADO",
+            "CORREO_ASEGURADO":"CORREO ASEGURADO",
+            "DIRECCION_ASEGURADO":"DIRECCIÓN ASEGURADO",
+            "NOMBRE_PROPIETARIO":"NOMBRE PROPIETARIO",
+            "RUT_PROPIETARIO":"RUT PROPIETARIO",
+            "TIPO_DE_PERSONA_PROPIETARIO":"TIPO DE PERSONA PROPIETARIO",
+            "TEL_PROPIETARIO":"TEL. PROPIETARIO",
+            "CORREO_PROPIETARIO":"CORREO PROPIETARIO",
+            "DIRECCION_PROPIETARIO":"DIRECCIÓN PROPIETARIO",
+            "LIQUIDADOR":"LIQUIDADOR",
+            "CORREO_LIQUIDADOR":"CORREO LIQUIDADOR",
+            "DRIVE":"DRIVE",
+            "COMENTARIO":"COMENTARIO"
+        },inplace=True)
+
     st.subheader("MÉTRICAS PARTICULARES",divider="blue")
 
     st.markdown(
