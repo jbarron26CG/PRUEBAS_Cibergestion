@@ -1003,7 +1003,7 @@ def kpi_card(backcolor, border, text1, text2, valor):
             color:"black";
         ">
             <p style="font-size: 20px;"><strong>{text1}</strong></p>
-            <p style="font-size: 25px;">{valor}</p>
+            <p style="font-size: 25px; color: rgb(172, 0, 0);"<strong><font color="red">{valor}</strong></font></p>
             <p style="font-size: 20px;"><strong>{text2}</strong></p>
         </div>
         """,
