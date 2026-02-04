@@ -1000,9 +1000,10 @@ def kpi_card(backcolor, border, text1, text2, valor):
             border-radius:6px;
             font-size:20px;
             text-align:center;
+            color:"black";
         ">
             <p style="font-size: 20px;"><strong>{text1}</strong></p>
-            <p style="font-size: 15px;">{valor}</p>
+            <p style="font-size: 25px;">{valor}</p>
             <p style="font-size: 20px;"><strong>{text2}</strong></p>
         </div>
         """,
